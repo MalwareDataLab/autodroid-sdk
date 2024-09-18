@@ -1,0 +1,11 @@
+if [ -n "$GIT_SEQUENCE_EDITOR" ]; then
+  echo "Skipping prepare-commit-msg hook due to rebase."
+  exit 0
+fi
+
+if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
+  exec < /dev/tty && node_modules/.bin/cz --hook || true
+else
+  echo "Skipping commitizen because the terminal is non-interactive."
+  exit 0
+fi

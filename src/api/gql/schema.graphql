@@ -1,0 +1,411 @@
+enum AUTH_PROVIDER {
+  FIREBASE
+}
+
+input AdminDatasetUpdateSchema {
+  description: String
+  tags: String
+}
+
+input AdminDatasetUpdateVisibilitySchema {
+  visibility: DATASET_VISIBILITY!
+}
+
+"""Cursor for pagination"""
+scalar ConnectionCursor
+
+enum DATASET_VISIBILITY {
+  PRIVATE
+  PUBLIC
+  UNDER_REVIEW
+}
+
+type Dataset {
+  created_at: DateTimeISO!
+  description: String
+  file: File!
+  file_id: String!
+  id: ID!
+  processes(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  tags: String
+  updated_at: DateTimeISO!
+  user: User!
+  user_id: String!
+  visibility: DATASET_VISIBILITY!
+}
+
+type DatasetPaginationConnection {
+  edges: [DatasetPaginationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DatasetPaginationEdge {
+  cursor: ConnectionCursor!
+  node: Dataset!
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar DateTimeISO
+
+enum FILE_PROVIDER_STATUS {
+  NOT_FOUND
+  PENDING
+  READY
+}
+
+enum FILE_TYPE {
+  DATASET
+}
+
+type File {
+  allow_public_access: Boolean!
+  created_at: DateTimeISO!
+  filename: String!
+  id: ID!
+  md5_hash: String!
+  mime_type: MIME_TYPE!
+  payload: JSON!
+  provider_path: String!
+  provider_status: FILE_PROVIDER_STATUS!
+  provider_verified_at: DateTimeISO
+  public_url: String
+  public_url_expires_at: DateTimeISO
+  size: Int!
+  storage_provider: STORAGE_PROVIDER!
+  type: FILE_TYPE!
+  updated_at: DateTimeISO!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+enum MIME_TYPE {
+  CSV
+  JPEG
+  OTHER
+  PDF
+  PNG
+}
+
+type Mutation {
+  adminDatasetDelete(dataset_id: String!): Dataset!
+  adminDatasetUpdate(data: AdminDatasetUpdateSchema!, dataset_id: String!): Dataset!
+  adminDatasetUpdateVisibility(data: AdminDatasetUpdateVisibilitySchema!, dataset_id: String!): Dataset!
+  adminProcessorCreate(data: ProcessorSchema!): Processor!
+  adminProcessorDelete(processor_id: String!): Processor!
+  adminProcessorUpdate(data: ProcessorSchema!, processor_id: String!): Processor!
+  adminWorkerDelete(worker_id: String!): Worker!
+  adminWorkerRegistrationTokenCreate(data: WorkerRegistrationTokenCreateSchema!): WorkerRegistrationToken!
+  adminWorkerRegistrationTokenDelete(worker_registration_token_id: String!): WorkerRegistrationToken!
+  userDatasetCreate(data: UserDatasetCreateSchema!): Dataset!
+  userDatasetDelete(dataset_id: String!): Dataset!
+  userDatasetRequestPublication(dataset_id: String!): Dataset!
+  userDatasetUpdate(data: UserDatasetUpdateSchema!, dataset_id: String!): Dataset!
+  userProcessingDelete(processing_id: String!): Processing!
+  userProcessingExtendKeepUntil(keep_until: DateTimeISO!, processing_id: String!): Processing!
+  userProcessingUpdateVisibility(processing_id: String!, visibility: PROCESSING_VISIBILITY!): Processing!
+  userRequestDatasetProcessing(data: RequestDatasetProcessingSchema!): Processing!
+  userSessionsClose: UserAuthProviderConn!
+  userUpdateData(data: UserUpdateDataSchema!): User!
+}
+
+enum PROCESSING_STATUS {
+  CANCELLED
+  FAILED
+  PENDING
+  RUNNING
+  SUCCEEDED
+}
+
+enum PROCESSING_VISIBILITY {
+  PRIVATE
+  PUBLIC
+}
+
+enum PROCESSOR_PARAMETER_TYPE {
+  BOOLEAN
+  INTEGER
+  STRING
+}
+
+enum PROCESSOR_VISIBILITY {
+  HIDDEN
+  PUBLIC
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Processing {
+  configuration: JSON!
+  created_at: DateTimeISO!
+  dataset: Dataset!
+  dataset_id: String!
+  finished_at: DateTimeISO
+  id: ID!
+  keep_until: DateTimeISO
+  payload: JSON!
+  processor: Processor!
+  processor_id: String!
+  result_file: File
+  result_file_id: String
+  started_at: DateTimeISO
+  status: PROCESSING_STATUS!
+  updated_at: DateTimeISO!
+  user: User!
+  user_id: String!
+  visibility: PROCESSING_VISIBILITY!
+  worker_id: String
+}
+
+type ProcessingPaginationConnection {
+  edges: [ProcessingPaginationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProcessingPaginationEdge {
+  cursor: ConnectionCursor!
+  node: Processing!
+}
+
+type Processor {
+  allowed_mime_types: String!
+  configuration: ProcessorConfiguration!
+  created_at: DateTimeISO!
+  description: String
+  id: ID!
+  image_tag: String!
+  name: String!
+  payload: JSON!
+  processes(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  tags: String
+  updated_at: DateTimeISO!
+  version: String!
+  visibility: PROCESSOR_VISIBILITY!
+}
+
+type ProcessorConfiguration {
+  command: String!
+  dataset_input_argument: String!
+  dataset_input_value: String!
+  dataset_output_argument: String!
+  dataset_output_value: String!
+  parameters: [ProcessorParameter!]!
+}
+
+input ProcessorConfigurationParameterSchema {
+  default_value: String
+  description: String!
+  is_required: Boolean!
+  name: String!
+  sequence: Int!
+  type: PROCESSOR_PARAMETER_TYPE!
+}
+
+input ProcessorConfigurationSchema {
+  command: String!
+  dataset_input_argument: String!
+  dataset_input_value: String!
+  dataset_output_argument: String!
+  dataset_output_value: String!
+  parameters: [ProcessorConfigurationParameterSchema!]!
+}
+
+type ProcessorPaginationConnection {
+  edges: [ProcessorPaginationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProcessorPaginationEdge {
+  cursor: ConnectionCursor!
+  node: Processor!
+}
+
+type ProcessorParameter {
+  default_value: String
+  description: String!
+  is_required: Boolean!
+  name: String!
+  sequence: Int!
+  type: PROCESSOR_PARAMETER_TYPE!
+}
+
+input ProcessorSchema {
+  allowed_mime_types: String!
+  configuration: ProcessorConfigurationSchema!
+  description: String
+  image_tag: String!
+  name: String!
+  tags: String
+  version: String!
+  visibility: PROCESSOR_VISIBILITY!
+}
+
+type Query {
+  adminDataset(dataset_id: String!): Dataset!
+  adminDatasets(after: ConnectionCursor, before: ConnectionCursor, file_id: String, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String, visibility: DATASET_VISIBILITY): DatasetPaginationConnection!
+  adminProcessor(processor_id: String!): Processor!
+  adminProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
+  adminWorker(worker_id: String!): Worker!
+  adminWorkerRegistrationToken(worker_registration_token_id: String!): WorkerRegistrationToken!
+  adminWorkerRegistrationTokens(activatable: Boolean, activated: Boolean, after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, expired: Boolean, first: Int, is_unlimited_usage: Boolean, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, token: String, user_id: String): WorkerRegistrationTokenPaginationConnection!
+  adminWorkers(after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, first: Int, last: Int, registration_token_id: String, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String): WorkerPaginationConnection!
+  session: Session!
+  user: User!
+  userDataset(dataset_id: String!): Dataset!
+  userDatasets(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): DatasetPaginationConnection!
+  userProcesses(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  userProcessing(processing_id: String!): Processing!
+  userProcessor(processor_id: String!): Processor!
+  userProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
+}
+
+input RequestDatasetProcessingParameterSchema {
+  name: String!
+  value: String!
+}
+
+input RequestDatasetProcessingSchema {
+  dataset_id: String!
+  parameters: [RequestDatasetProcessingParameterSchema!]!
+  processor_id: String!
+}
+
+enum SORT_ORDER {
+  ASC
+  DESC
+}
+
+enum STORAGE_PROVIDER {
+  GOOGLE_CLOUD_STORAGE
+}
+
+type Session {
+  user: User!
+  user_auth_provider_conn: UserAuthProviderConn!
+  user_session: UserSession!
+}
+
+input SortingFieldSchema {
+  field: String!
+  order: SORT_ORDER!
+}
+
+type User {
+  created_at: DateTimeISO!
+  email: String!
+  id: ID!
+  is_admin: Boolean!
+  language: String
+  name: String
+  phone_number: String
+  updated_at: DateTimeISO!
+}
+
+type UserAuthProviderConn {
+  auth_provider: AUTH_PROVIDER!
+  code: String!
+  created_at: DateTimeISO!
+  disconnected_at: DateTimeISO
+  id: ID!
+  payload: JSON!
+  updated_at: DateTimeISO!
+  user_id: String!
+}
+
+input UserDatasetCreateSchema {
+  description: String
+  filename: String!
+  md5_hash: String!
+  mime_type: MIME_TYPE!
+  size: Int!
+  tags: String
+}
+
+input UserDatasetUpdateSchema {
+  description: String
+  tags: String
+}
+
+type UserSession {
+  access_token: String!
+  access_token_expires_at: DateTimeISO!
+  payload: JSON!
+  refresh_token: String
+  refresh_token_expires_at: DateTimeISO
+  user_auth_provider_conn: UserAuthProviderConn!
+  user_auth_provider_conn_id: String!
+}
+
+input UserUpdateDataSchema {
+  language: String
+  name: String!
+  phone_number: String
+}
+
+type Worker {
+  agent_info: JSON!
+  archived_at: DateTimeISO
+  created_at: DateTimeISO!
+  id: ID!
+  internal_id: String!
+  payload: JSON!
+  refresh_token: String!
+  refresh_token_expires_at: DateTimeISO!
+  registration_token: WorkerRegistrationToken!
+  registration_token_id: String!
+  signature: String!
+  system_info: JSON!
+  updated_at: DateTimeISO!
+  user_id: String!
+}
+
+type WorkerPaginationConnection {
+  edges: [WorkerPaginationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type WorkerPaginationEdge {
+  cursor: ConnectionCursor!
+  node: Worker!
+}
+
+type WorkerRegistrationToken {
+  activated_at: DateTimeISO
+  archived_at: DateTimeISO
+  created_at: DateTimeISO!
+  expires_at: DateTimeISO
+  id: ID!
+  is_unlimited_usage: Boolean!
+  token: String!
+  updated_at: DateTimeISO!
+  user_id: String!
+}
+
+input WorkerRegistrationTokenCreateSchema {
+  expires_at: DateTimeISO
+  is_unlimited_usage: Boolean!
+}
+
+type WorkerRegistrationTokenPaginationConnection {
+  edges: [WorkerRegistrationTokenPaginationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type WorkerRegistrationTokenPaginationEdge {
+  cursor: ConnectionCursor!
+  node: WorkerRegistrationToken!
+}
