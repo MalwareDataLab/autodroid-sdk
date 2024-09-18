@@ -7,47 +7,46 @@ fi
 DIR=$(cd "$(dirname "$0")/.." && pwd)
 
 if ! [ -x "$(command -v node)" ]; then
-  echo "Error: node is not installed." >&2
+  echo "❌ Error: node is not installed." >&2
   exit 1
 fi
 
 if [ ! -f "$HOME/.nvm/nvm.sh" ] && [ ! -s "$NVM_DIR/nvm.sh" ]; then
-  echo "Error: nvm is not installed." >&2
+  echo "❌ Error: nvm is not installed." >&2
   exit 1
 fi
 
 source "$HOME/.nvm/nvm.sh" || source "$NVM_DIR/nvm.sh"
 
-if ! [ -x "$(command -v yarn)" ]; then
-  echo "Error: yarn is not installed in bash, see the nvm installation instructions and check your .bashrc or .bash_profile." >&2
+if ! [ -x "$(command -v npm)" ]; then
+  echo "❌ Error: npm is not installed in bash, see the nvm installation instructions and check your .bashrc or .bash_profile." >&2
   exit 1
 fi
 
 if ! [ -x "$(command -v yalc)" ]; then
-  echo "Installing yalc..."
-  yarn global add yalc
+  echo "⏭ Installing yalc..."
+  npm install -g yalc
 fi
 
 if ! [ -x "$(command -v yalc)" ]; then
-  echo "Error: yalc is not installed." >&2
-  echo "Please add yarn to PATH using: export PATH=\"$(yarn global bin):\$PATH\"" >&2
+  echo "❌ Error: yalc is not installed. Check npm on PATH." >&2
   exit 1
 fi
 
 if ! [ -f "$DIR/package.json" ]; then
-  echo "Error: package.json not found in $DIR" >&2
+  echo "❌ Error: package.json not found in $DIR" >&2
   exit 1
 fi
 
-if ! [ -f "$DIR/yarn.lock" ]; then
-  echo "Error: yarn.lock not found in $DIR" >&2
+if ! [ -f "$DIR/package-lock.json" ]; then
+  echo "❌ Error: package-lock.json not found in $DIR" >&2
   exit 1
 fi
 
 PACKAGE_NAME=$(node -p "require('$DIR/package.json').name")
 
 if [ -z "$PACKAGE_NAME" ]; then
-  echo "Error: package.json name is not set in $DIR" >&2
+  echo "❌ Error: package.json name is not set in $DIR" >&2
   exit 1
 fi
 
@@ -58,24 +57,24 @@ if [ -f "$DIR/.env" ]; then
   source "$DIR/.env"
   set +a
 else
-  echo "Warning: .env file not found in $DIR"
+  echo "🟧 Warning: .env file not found in $DIR"
 fi
 
 if [ -z "$PROJECT_PATH" ]; then
-  echo "Warning: PROJECT_PATH is not set in $DIR/.env"
+  echo "🟧 Warning: PROJECT_PATH is not set in $DIR/.env"
 else
   if ! [ -d "$PROJECT_PATH" ]; then
-    echo "Error: PROJECT_PATH is not a directory in $DIR/.env" >&2
+    echo "❌ Error: PROJECT_PATH is not a directory in $DIR/.env" >&2
     exit 1
   fi
 
   if ! [ -f "$PROJECT_PATH/package.json" ]; then
-    echo "Error: package.json not found in $PROJECT_PATH" >&2
+    echo "❌ Error: package.json not found in $PROJECT_PATH" >&2
     exit 1
   fi
 
-  if ! [ -f "$PROJECT_PATH/yarn.lock" ]; then
-    echo "Error: yarn.lock not found in $PROJECT_PATH" >&2
+  if ! [ -f "$PROJECT_PATH/package-lock.json" ]; then
+    echo "❌ Error: package-lock.json not found in $PROJECT_PATH" >&2
     exit 1
   fi
 fi
@@ -86,29 +85,30 @@ executeInProject() {
   fi
 
   local EXEC_ARGS="$@"
-  echo "Executing '$EXEC_ARGS' in $PROJECT_PATH..."
+  echo "🔀 Executing '$EXEC_ARGS' in $PROJECT_PATH..."
 
   (
     NODE_VERSION=$(cat "$PROJECT_PATH/.nvmrc")
     cd $PROJECT_PATH
     nvm use $NODE_VERSION --silent
-    NEW_PATH=$(echo "$PATH" | sed -e "s/\\/tmp\\/yarn\d*-[^\:]*://g")
+    NEW_PATH=$(echo "$PATH" | sed -e "s/\\/tmp\\/npm\d*-[^\:]*://g")
     export PATH="$NEW_PATH"
     $EXEC_ARGS
   )
 }
 
 cleanup() {
-  echo "Cleaning up..."
+  echo "⚪ Cleaning up..."
 
   if [ -n "$PROJECT_PATH" ]; then
-    echo "Removing $PACKAGE_NAME from $PROJECT_PATH..."
+    echo "🔵 Removing $PACKAGE_NAME from $PROJECT_PATH..."
     executeInProject yalc remove $PACKAGE_NAME
+    executeInProject npm uninstall $PACKAGE_NAME --silent
 
-    echo "Installing old dependencies in $PROJECT_PATH using yarn... Please wait."
-    executeInProject yarn --no-node-version-check --ignore-engines
+    echo "🔄 Installing old dependencies in $PROJECT_PATH using npm... Please wait."
+    executeInProject npm install --silent
 
-    echo "Unregistering $PACKAGE_NAME"
+    echo "🔄 Unregistering $PACKAGE_NAME"
     yalc installations clean $PACKAGE_NAME
 
     if [ -d "$HOME/.yalc/packages/$PACKAGE_NAME" ]; then
@@ -116,23 +116,22 @@ cleanup() {
     fi
   fi
 
-  echo "Completed."
+  echo "✅ Completed."
 
   while read -r -t 0; do read -r; done
 
-  return 0
+  exit 0
 }
 
 trap cleanup SIGINT SIGTERM
 
-yarn --cwd "$DIR/" tsup --watch --onSuccess "yalc push && sleep 7 && yalc push" &
+npx --prefix "$DIR/" tsup --watch --onSuccess "yalc push && sleep 7 && yalc push" &
 
 while [ ! -d "$DIR/dist" ]; do
   sleep 1
 done
 
 PACKAGE_MAIN=$(node -p "require('$DIR/package.json').main || ''")
-PACKAGE_EXPORTS=$(node -p "require('$DIR/package.json').exports || ''")
 PACKAGE_TYPES=$(node -p "require('$DIR/package.json').types || ''")
 
 if [ -n "$PACKAGE_MAIN" ]; then
@@ -141,14 +140,8 @@ if [ -n "$PACKAGE_MAIN" ]; then
   done
 fi
 
-if [ -n "$PACKAGE_EXPORTS" ]; then
-  while [ ! -f "$DIR/$PACKAGE_EXPORTS" ]; do
-    sleep 1
-  done
-fi
-
 if [ -n "$PACKAGE_TYPES" ]; then
-  echo "Waiting for $DIR/$PACKAGE_TYPES..."
+  echo "⌛ Waiting for $DIR/$PACKAGE_TYPES..."
   while [ ! -f "$DIR/$PACKAGE_TYPES" ]; do
     sleep 1
   done
@@ -157,14 +150,14 @@ fi
 (cd $DIR && yalc publish)
 
 if [ -n "$PROJECT_PATH" ]; then
-  echo "Adding $PACKAGE_NAME to $PROJECT_PATH..."
+  echo "🔄 Adding $PACKAGE_NAME to $PROJECT_PATH..."
   executeInProject yalc add $PACKAGE_NAME
 
-  echo "Installing dependencies in $PROJECT_PATH using yarn... Please wait."
-  executeInProject yarn --no-node-version-check --ignore-engines
+  echo "🔄 Installing dependencies in $PROJECT_PATH using npm... Please wait."
+  executeInProject npm install --silent
 
   if ! grep -q "yalc.lock" "$PROJECT_PATH/.gitignore"; then
-    echo "Adding yalc.lock to .gitignore..."
+    echo "🔄 Adding yalc.lock to .gitignore..."
     echo "" >> "$PROJECT_PATH/.gitignore"
     echo "# yalc" >> "$PROJECT_PATH/.gitignore"
     echo ".yalc" >> "$PROJECT_PATH/.gitignore"

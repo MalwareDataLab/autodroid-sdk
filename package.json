@@ -1,5 +1,5 @@
 {
-  "name": "autodroid-sdk",
+  "name": "autodroid",
   "private": false,
   "version": "0.0.1",
   "description": "SDK for the AutoDroid API",
@@ -40,6 +40,7 @@
     "codegen": "graphql-codegen",
     "codegen:update": "graphql-codegen && yalc publish",
     "codegen:watch": "graphql-codegen -w",
+    "release": "npm run build && changeset publish",
     "prepare": "husky"
   },
   "dependencies": {
