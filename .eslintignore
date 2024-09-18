@@ -224,3 +224,6 @@ dist
 # Yalc
 .yalc
 yalc.lock
+
+# Graphql Codegen
+src/api/gql/**

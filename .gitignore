@@ -2,3 +2,4 @@ node_modules
 dist
 .env
 .env.test
+./src/api/gql

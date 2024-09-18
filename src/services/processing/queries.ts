@@ -67,3 +67,47 @@ export const USER_PROCESSING_GET_MANY_QUERY = gql(`
     }
   }
 `);
+
+export const USER_PROCESSING_REQUEST_DATASET_PROCESSING_MUTATION = gql(`
+  mutation UserRequestDatasetProcessing($data: RequestDatasetProcessingSchema!) {
+    userRequestDatasetProcessing(data: $data) {
+      ...ProcessingFragment
+    }
+  }
+`);
+
+export const USER_PROCESSING_UPDATE_VISIBILITY_MUTATION = gql(`
+  mutation UserProcessingUpdateVisibility(
+    $processingId: String!
+    $visibility: PROCESSING_VISIBILITY!
+  ) {
+    userProcessingUpdateVisibility(
+      processing_id: $processingId,
+      visibility: $visibility
+    ) {
+      ...ProcessingFragment
+    }
+  }
+`);
+
+export const USER_PROCESSING_EXTEND_KEEP_UNTIL_MUTATION = gql(`
+  mutation UserProcessingExtendKeepUntil(
+    $processingId: String!,
+    $keepUntil: DateTimeISO!
+  ) {
+    userProcessingExtendKeepUntil(
+      processing_id: $processingId,
+      keep_until: $keepUntil
+      ) {
+      configuration
+    }
+  }
+`);
+
+export const USER_PROCESSING_DELETE_MUTATION = gql(`
+  mutation UserProcessingDelete($processingId: String!) {
+    userProcessingDelete(processing_id: $processingId) {
+      ...ProcessingFragment
+    }
+  }
+`);
