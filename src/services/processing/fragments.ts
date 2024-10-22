@@ -8,7 +8,13 @@ export const PROCESSING_FRAGMENT = gql(`
     started_at
     finished_at
     keep_until
-    configuration
+    verified_at
+    attempts
+    message
+    configuration {
+      key
+      value
+    }
     payload
     created_at
     updated_at

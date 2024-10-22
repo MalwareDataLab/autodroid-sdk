@@ -99,7 +99,7 @@ export const USER_PROCESSING_EXTEND_KEEP_UNTIL_MUTATION = gql(`
       processing_id: $processingId,
       keep_until: $keepUntil
       ) {
-      configuration
+      ...ProcessingFragment
     }
   }
 `);
