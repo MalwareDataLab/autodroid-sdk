@@ -8,6 +8,8 @@ export const FILE_FRAGMENT = gql(`
     provider_status
     provider_verified_at
     type
+    upload_url
+    upload_url_expires_at
     allow_public_access
     public_url_expires_at
     filename

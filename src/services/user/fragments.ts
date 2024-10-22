@@ -7,9 +7,9 @@ export const USER_FRAGMENT = gql(`
     name
     phone_number
     language
-    is_admin
     created_at
     updated_at
+    is_admin
   }
 `);
 

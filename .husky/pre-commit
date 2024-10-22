@@ -1,2 +1,2 @@
-npm install --silent
+yarn
 npx lint-staged
