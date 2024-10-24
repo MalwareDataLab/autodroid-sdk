@@ -31,6 +31,15 @@ const config: CodegenConfig = {
         },
       },
     },
+    './src/api/gql/types.ts': {
+      plugins: ['typescript', 'typescript-operations'],
+      config: {
+        namingConvention: 'keep',
+        scalars: {
+          BigInt: 'bigint',
+        },
+      },
+    },
   },
   ignoreNoDocuments: true,
 };
