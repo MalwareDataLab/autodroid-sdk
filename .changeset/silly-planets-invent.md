@@ -1,5 +1,0 @@
----
-"autodroid": patch
----
-
-add types
