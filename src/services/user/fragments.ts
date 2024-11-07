@@ -6,6 +6,7 @@ export const USER_FRAGMENT = gql(`
     email
     name
     phone_number
+    learning_data
     language
     created_at
     updated_at

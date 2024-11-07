@@ -33,6 +33,11 @@ export const PROCESSING_FRAGMENT = gql(`
       ...FileFragment
     }
 
+    metrics_file_id
+    metrics_file {
+      ...FileFragment
+    }
+
     worker_id
     user_id
   }

@@ -58,7 +58,8 @@ enum FILE_PROVIDER_STATUS {
 
 enum FILE_TYPE {
   DATASET
-  PROCESSING
+  PROCESSING_METRICS
+  PROCESSING_RESULT
 }
 
 type File {
@@ -116,6 +117,16 @@ type Mutation {
   userRequestDatasetProcessing(data: RequestDatasetProcessingSchema!): Processing!
   userSessionsClose: UserAuthProviderConn!
   userUpdateData(data: UserUpdateDataSchema!): User!
+  workerProcessingCaptureMetricsFileUpload(processing_id: String!): File!
+  workerProcessingCaptureResultFileUpload(processing_id: String!): File!
+  workerProcessingGenerateMetricsFileUpload(data: RequestFileUploadSignedUrlSchema!, processing_id: String!): File!
+  workerProcessingGenerateResultFileUpload(data: RequestFileUploadSignedUrlSchema!, processing_id: String!): File!
+  workerProcessingRegisterFailure(processing_id: String!): Processing!
+  workerProcessingRegisterProgress(processing_id: String!): Processing!
+  workerProcessingRegisterSuccess(processing_id: String!): Processing!
+  workerRegister(internal_id: String!, registration_token: String!, signature: String!, system_info: JSON!): Worker!
+  workerUpdateAccessToken(internal_id: String!, refresh_token: String!, registration_token: String!, signature: String!, system_info: JSON!, worker_id: String!): WorkerAccessToken!
+  workerUpdateRefreshToken(internal_id: String!, refresh_token: String!, registration_token: String!, signature: String!, system_info: JSON!, worker_id: String!): Worker!
 }
 
 enum PROCESSING_STATUS {
@@ -159,6 +170,8 @@ type Processing {
   id: ID!
   keep_until: DateTimeISO
   message: String
+  metrics_file: File
+  metrics_file_id: String
   payload: JSON!
   processor: Processor!
   processor_id: String!
@@ -212,6 +225,8 @@ type ProcessorConfiguration {
   dataset_input_value: String!
   dataset_output_argument: String!
   dataset_output_value: String!
+  output_metrics_file_glob_patterns: [String!]!
+  output_result_file_glob_patterns: [String!]!
   parameters: [ProcessorParameter!]!
 }
 
@@ -230,6 +245,8 @@ input ProcessorConfigurationSchema {
   dataset_input_value: String!
   dataset_output_argument: String!
   dataset_output_value: String!
+  output_metrics_file_glob_patterns: [String!]!
+  output_result_file_glob_patterns: [String!]!
   parameters: [ProcessorConfigurationParameterSchema!]!
 }
 
@@ -273,6 +290,9 @@ type Query {
   adminWorkerRegistrationToken(worker_registration_token_id: String!): WorkerRegistrationToken!
   adminWorkerRegistrationTokens(activatable: Boolean, activated: Boolean, after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, expired: Boolean, first: Int, is_unlimited_usage: Boolean, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, token: String, user_id: String): WorkerRegistrationTokenPaginationConnection!
   adminWorkers(after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, first: Int, last: Int, registration_token_id: String, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String): WorkerPaginationConnection!
+  healthCheck: DateTimeISO!
+  healthLivenessCheck: DateTimeISO!
+  healthReadinessCheck: DateTimeISO!
   session: Session!
   user: User!
   userDataset(dataset_id: String!): Dataset!
@@ -281,6 +301,8 @@ type Query {
   userProcessing(processing_id: String!): Processing!
   userProcessor(processor_id: String!): Processor!
   userProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
+  worker: Worker!
+  workerProcessing(processing_id: String!): Processing!
 }
 
 input RequestDatasetProcessingParameterSchema {
@@ -292,6 +314,13 @@ input RequestDatasetProcessingSchema {
   dataset_id: String!
   parameters: [RequestDatasetProcessingParameterSchema!]!
   processor_id: String!
+}
+
+input RequestFileUploadSignedUrlSchema {
+  filename: String!
+  md5_hash: String!
+  mime_type: MIME_TYPE!
+  size: Int!
 }
 
 enum SORT_ORDER {
@@ -320,6 +349,7 @@ type User {
   id: ID!
   is_admin: Boolean!
   language: String
+  learning_data: JSON!
   name: String
   phone_number: String
   updated_at: DateTimeISO!
@@ -381,6 +411,12 @@ type Worker {
   system_info: JSON!
   updated_at: DateTimeISO!
   user_id: String!
+  version: String
+}
+
+type WorkerAccessToken {
+  access_token: String!
+  access_token_expires_at: DateTimeISO!
 }
 
 type WorkerPaginationConnection {
