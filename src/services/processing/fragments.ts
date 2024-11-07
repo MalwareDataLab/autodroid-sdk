@@ -15,7 +15,6 @@ export const PROCESSING_FRAGMENT = gql(`
       key
       value
     }
-    payload
     created_at
     updated_at
 

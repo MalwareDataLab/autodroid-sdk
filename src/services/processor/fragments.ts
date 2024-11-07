@@ -25,7 +25,6 @@ export const PROCESSOR_FRAGMENT = gql(`
       dataset_output_value
       command
     }
-    payload
     created_at
     updated_at
   }

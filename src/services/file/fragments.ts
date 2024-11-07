@@ -16,7 +16,6 @@ export const FILE_FRAGMENT = gql(`
     mime_type
     size
     md5_hash
-    payload
     created_at
     updated_at
     public_url
