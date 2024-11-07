@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.0.5
+
+### Patch Changes
+
+- e4377fa: add multiple services
+
 ## 0.0.4
 
 ### Patch Changes
