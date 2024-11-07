@@ -11,6 +11,8 @@ export const PROCESSOR_FRAGMENT = gql(`
     allowed_mime_types
     visibility
     configuration {
+      output_metrics_file_glob_patterns:
+      output_result_file_glob_patterns
       parameters {
         sequence
         name
@@ -25,7 +27,6 @@ export const PROCESSOR_FRAGMENT = gql(`
       dataset_output_value
       command
     }
-    payload
     created_at
     updated_at
   }

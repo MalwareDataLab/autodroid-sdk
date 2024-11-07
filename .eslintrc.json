@@ -33,6 +33,14 @@
     ],
 
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "_",
+        "ignoreRestSiblings": true,
+        "caughtErrors": "none"
+      }
+    ],
 
     "lines-between-class-members": [
       "error",

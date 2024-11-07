@@ -6,6 +6,7 @@ export const USER_FRAGMENT = gql(`
     email
     name
     phone_number
+    learning_data
     language
     created_at
     updated_at
@@ -18,7 +19,6 @@ export const USER_AUTH_PROVIDER_CONN_FRAGMENT = gql(`
     id
     auth_provider
     code
-    payload
     disconnected_at
     created_at
     updated_at
@@ -32,7 +32,6 @@ export const USER_SESSION_FRAGMENT = gql(`
     access_token_expires_at
     refresh_token
     refresh_token_expires_at
-    payload
     user_auth_provider_conn_id
   }
 `);

@@ -15,7 +15,6 @@ export const PROCESSING_FRAGMENT = gql(`
       key
       value
     }
-    payload
     created_at
     updated_at
 
@@ -31,6 +30,11 @@ export const PROCESSING_FRAGMENT = gql(`
 
     result_file_id
     result_file {
+      ...FileFragment
+    }
+
+    metrics_file_id
+    metrics_file {
       ...FileFragment
     }
 

@@ -19,8 +19,6 @@ export const USER_PROCESSING_GET_MANY_QUERY = gql(`
     $status: PROCESSING_STATUS,
     $visibility: PROCESSING_VISIBILITY,
 
-    $sorting: [SortingFieldSchema!]
-
     $skip: Int,
     $take: Int,
 
@@ -29,6 +27,8 @@ export const USER_PROCESSING_GET_MANY_QUERY = gql(`
 
     $before: ConnectionCursor,
     $last: Int,
+
+    $sorting: [SortingFieldSchema!]
 ) {
     userProcesses(
       dataset_id: $datasetId,
@@ -40,8 +40,6 @@ export const USER_PROCESSING_GET_MANY_QUERY = gql(`
       status: $status,
       visibility: $visibility,
 
-      sorting: $sorting
-
       skip: $skip,
       take: $take,
 
@@ -50,6 +48,8 @@ export const USER_PROCESSING_GET_MANY_QUERY = gql(`
 
       before: $before,
       last: $last,
+
+      sorting: $sorting
     ) {
       edges {
         node {

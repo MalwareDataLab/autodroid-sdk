@@ -11,6 +11,16 @@ input AdminDatasetUpdateVisibilitySchema {
   visibility: DATASET_VISIBILITY!
 }
 
+input AdminProcessingUpdateSchema {
+  keep_until: DateTimeISO!
+  visibility: PROCESSING_VISIBILITY
+}
+
+input AdminWorkerUpdateSchema {
+  description: String
+  tags: String
+}
+
 """Cursor for pagination"""
 scalar ConnectionCursor
 
@@ -58,7 +68,8 @@ enum FILE_PROVIDER_STATUS {
 
 enum FILE_TYPE {
   DATASET
-  PROCESSING
+  PROCESSING_METRICS
+  PROCESSING_RESULT
 }
 
 type File {
@@ -100,12 +111,15 @@ type Mutation {
   adminDatasetDelete(dataset_id: String!): Dataset!
   adminDatasetUpdate(data: AdminDatasetUpdateSchema!, dataset_id: String!): Dataset!
   adminDatasetUpdateVisibility(data: AdminDatasetUpdateVisibilitySchema!, dataset_id: String!): Dataset!
+  adminProcessingDelete(processing_id: String!): Processing!
+  adminProcessingUpdate(data: AdminProcessingUpdateSchema!, processing_id: String!): Processing!
   adminProcessorCreate(data: ProcessorSchema!): Processor!
   adminProcessorDelete(processor_id: String!): Processor!
   adminProcessorUpdate(data: ProcessorSchema!, processor_id: String!): Processor!
   adminWorkerDelete(worker_id: String!): Worker!
   adminWorkerRegistrationTokenCreate(data: WorkerRegistrationTokenCreateSchema!): WorkerRegistrationToken!
   adminWorkerRegistrationTokenDelete(worker_registration_token_id: String!): WorkerRegistrationToken!
+  adminWorkerUpdate(data: AdminWorkerUpdateSchema!, worker_id: String!): Worker!
   userDatasetCreate(data: UserDatasetCreateSchema!): Dataset!
   userDatasetDelete(dataset_id: String!): Dataset!
   userDatasetRequestPublication(dataset_id: String!): Dataset!
@@ -116,6 +130,16 @@ type Mutation {
   userRequestDatasetProcessing(data: RequestDatasetProcessingSchema!): Processing!
   userSessionsClose: UserAuthProviderConn!
   userUpdateData(data: UserUpdateDataSchema!): User!
+  workerProcessingCaptureMetricsFileUpload(processing_id: String!): File!
+  workerProcessingCaptureResultFileUpload(processing_id: String!): File!
+  workerProcessingGenerateMetricsFileUpload(data: RequestFileUploadSignedUrlSchema!, processing_id: String!): File!
+  workerProcessingGenerateResultFileUpload(data: RequestFileUploadSignedUrlSchema!, processing_id: String!): File!
+  workerProcessingRegisterFailure(processing_id: String!): Processing!
+  workerProcessingRegisterProgress(processing_id: String!): Processing!
+  workerProcessingRegisterSuccess(processing_id: String!): Processing!
+  workerRegister(internal_id: String!, registration_token: String!, signature: String!, system_info: JSON!): Worker!
+  workerUpdateAccessToken(internal_id: String!, refresh_token: String!, registration_token: String!, signature: String!, system_info: JSON!, worker_id: String!): WorkerAccessToken!
+  workerUpdateRefreshToken(internal_id: String!, refresh_token: String!, registration_token: String!, signature: String!, system_info: JSON!, worker_id: String!): Worker!
 }
 
 enum PROCESSING_STATUS {
@@ -159,6 +183,8 @@ type Processing {
   id: ID!
   keep_until: DateTimeISO
   message: String
+  metrics_file: File
+  metrics_file_id: String
   payload: JSON!
   processor: Processor!
   processor_id: String!
@@ -212,6 +238,8 @@ type ProcessorConfiguration {
   dataset_input_value: String!
   dataset_output_argument: String!
   dataset_output_value: String!
+  output_metrics_file_glob_patterns: [String!]!
+  output_result_file_glob_patterns: [String!]!
   parameters: [ProcessorParameter!]!
 }
 
@@ -230,6 +258,8 @@ input ProcessorConfigurationSchema {
   dataset_input_value: String!
   dataset_output_argument: String!
   dataset_output_value: String!
+  output_metrics_file_glob_patterns: [String!]!
+  output_result_file_glob_patterns: [String!]!
   parameters: [ProcessorConfigurationParameterSchema!]!
 }
 
@@ -267,12 +297,17 @@ input ProcessorSchema {
 type Query {
   adminDataset(dataset_id: String!): Dataset!
   adminDatasets(after: ConnectionCursor, before: ConnectionCursor, file_id: String, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String, visibility: DATASET_VISIBILITY): DatasetPaginationConnection!
+  adminProcesses(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, metrics_file_id: String, processor_id: String, result_file_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, user_id: String, visibility: PROCESSING_VISIBILITY, worker_id: String): ProcessingPaginationConnection!
+  adminProcessing(processing_id: String!): Processing!
   adminProcessor(processor_id: String!): Processor!
   adminProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
   adminWorker(worker_id: String!): Worker!
   adminWorkerRegistrationToken(worker_registration_token_id: String!): WorkerRegistrationToken!
   adminWorkerRegistrationTokens(activatable: Boolean, activated: Boolean, after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, expired: Boolean, first: Int, is_unlimited_usage: Boolean, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, token: String, user_id: String): WorkerRegistrationTokenPaginationConnection!
   adminWorkers(after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, first: Int, last: Int, registration_token_id: String, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String): WorkerPaginationConnection!
+  healthCheck: DateTimeISO!
+  healthLivenessCheck: DateTimeISO!
+  healthReadinessCheck: DateTimeISO!
   session: Session!
   user: User!
   userDataset(dataset_id: String!): Dataset!
@@ -281,6 +316,8 @@ type Query {
   userProcessing(processing_id: String!): Processing!
   userProcessor(processor_id: String!): Processor!
   userProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
+  worker: Worker!
+  workerProcessing(processing_id: String!): Processing!
 }
 
 input RequestDatasetProcessingParameterSchema {
@@ -292,6 +329,13 @@ input RequestDatasetProcessingSchema {
   dataset_id: String!
   parameters: [RequestDatasetProcessingParameterSchema!]!
   processor_id: String!
+}
+
+input RequestFileUploadSignedUrlSchema {
+  filename: String!
+  md5_hash: String!
+  mime_type: MIME_TYPE!
+  size: Int!
 }
 
 enum SORT_ORDER {
@@ -320,6 +364,7 @@ type User {
   id: ID!
   is_admin: Boolean!
   language: String
+  learning_data: JSON!
   name: String
   phone_number: String
   updated_at: DateTimeISO!
@@ -370,8 +415,10 @@ type Worker {
   agent_info: JSON!
   archived_at: DateTimeISO
   created_at: DateTimeISO!
+  description: String
   id: ID!
   internal_id: String!
+  last_seen_at: DateTimeISO
   payload: JSON!
   refresh_token: String!
   refresh_token_expires_at: DateTimeISO!
@@ -379,8 +426,15 @@ type Worker {
   registration_token_id: String!
   signature: String!
   system_info: JSON!
+  tags: String
   updated_at: DateTimeISO!
   user_id: String!
+  version: String
+}
+
+type WorkerAccessToken {
+  access_token: String!
+  access_token_expires_at: DateTimeISO!
 }
 
 type WorkerPaginationConnection {
