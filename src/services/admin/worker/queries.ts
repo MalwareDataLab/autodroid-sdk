@@ -58,6 +58,14 @@ export const ADMIN_WORKER_GET_MANY_QUERY = gql(`
   }
 `);
 
+export const ADMIN_WORKER_UPDATE_MUTATION = gql(`
+  mutation AdminWorkerUpdate($workerId: String!, $data: AdminWorkerUpdateSchema!) {
+    adminWorkerUpdate(worker_id: $workerId, data: $data) {
+      ...WorkerFragment
+    }
+  }
+`);
+
 export const ADMIN_WORKER_DELETE_MUTATION = gql(`
   mutation AdminWorkerDelete($workerId: String!) {
     adminWorkerDelete(worker_id: $workerId) {

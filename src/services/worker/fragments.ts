@@ -26,6 +26,8 @@ export const WORKER_FRAGMENT = gql(`
     registration_token_id
     signature
     system_info
+    description
+    tags
     updated_at
     user_id
     version

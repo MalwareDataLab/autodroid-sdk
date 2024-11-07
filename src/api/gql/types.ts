@@ -30,6 +30,16 @@ export type AdminDatasetUpdateVisibilitySchema = {
   visibility: DATASET_VISIBILITY;
 };
 
+export type AdminProcessingUpdateSchema = {
+  keep_until: Scalars['DateTimeISO']['input'];
+  visibility?: InputMaybe<PROCESSING_VISIBILITY>;
+};
+
+export type AdminWorkerUpdateSchema = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Scalars['String']['input']>;
+};
+
 export enum DATASET_VISIBILITY {
   PRIVATE = 'PRIVATE',
   PUBLIC = 'PUBLIC',
@@ -129,12 +139,15 @@ export type Mutation = {
   adminDatasetDelete: Dataset;
   adminDatasetUpdate: Dataset;
   adminDatasetUpdateVisibility: Dataset;
+  adminProcessingDelete: Processing;
+  adminProcessingUpdate: Processing;
   adminProcessorCreate: Processor;
   adminProcessorDelete: Processor;
   adminProcessorUpdate: Processor;
   adminWorkerDelete: Worker;
   adminWorkerRegistrationTokenCreate: WorkerRegistrationToken;
   adminWorkerRegistrationTokenDelete: WorkerRegistrationToken;
+  adminWorkerUpdate: Worker;
   userDatasetCreate: Dataset;
   userDatasetDelete: Dataset;
   userDatasetRequestPublication: Dataset;
@@ -175,6 +188,17 @@ export type MutationadminDatasetUpdateVisibilityArgs = {
 };
 
 
+export type MutationadminProcessingDeleteArgs = {
+  processing_id: Scalars['String']['input'];
+};
+
+
+export type MutationadminProcessingUpdateArgs = {
+  data: AdminProcessingUpdateSchema;
+  processing_id: Scalars['String']['input'];
+};
+
+
 export type MutationadminProcessorCreateArgs = {
   data: ProcessorSchema;
 };
@@ -203,6 +227,12 @@ export type MutationadminWorkerRegistrationTokenCreateArgs = {
 
 export type MutationadminWorkerRegistrationTokenDeleteArgs = {
   worker_registration_token_id: Scalars['String']['input'];
+};
+
+
+export type MutationadminWorkerUpdateArgs = {
+  data: AdminWorkerUpdateSchema;
+  worker_id: Scalars['String']['input'];
 };
 
 
@@ -501,6 +531,8 @@ export type Query = {
   __typename?: 'Query';
   adminDataset: Dataset;
   adminDatasets: DatasetPaginationConnection;
+  adminProcesses: ProcessingPaginationConnection;
+  adminProcessing: Processing;
   adminProcessor: Processor;
   adminProcessors: ProcessorPaginationConnection;
   adminWorker: Worker;
@@ -539,6 +571,32 @@ export type QueryadminDatasetsArgs = {
   take?: InputMaybe<Scalars['Int']['input']>;
   user_id?: InputMaybe<Scalars['String']['input']>;
   visibility?: InputMaybe<DATASET_VISIBILITY>;
+};
+
+
+export type QueryadminProcessesArgs = {
+  after?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  before?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  dataset_id?: InputMaybe<Scalars['String']['input']>;
+  finished?: InputMaybe<Scalars['Boolean']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  metrics_file_id?: InputMaybe<Scalars['String']['input']>;
+  processor_id?: InputMaybe<Scalars['String']['input']>;
+  result_file_id?: InputMaybe<Scalars['String']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  sorting?: InputMaybe<Array<SortingFieldSchema>>;
+  started?: InputMaybe<Scalars['Boolean']['input']>;
+  status?: InputMaybe<PROCESSING_STATUS>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  user_id?: InputMaybe<Scalars['String']['input']>;
+  visibility?: InputMaybe<PROCESSING_VISIBILITY>;
+  worker_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryadminProcessingArgs = {
+  processing_id: Scalars['String']['input'];
 };
 
 
@@ -758,8 +816,10 @@ export type Worker = {
   agent_info: Scalars['JSON']['output'];
   archived_at?: Maybe<Scalars['DateTimeISO']['output']>;
   created_at: Scalars['DateTimeISO']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   internal_id: Scalars['String']['output'];
+  last_seen_at?: Maybe<Scalars['DateTimeISO']['output']>;
   payload: Scalars['JSON']['output'];
   refresh_token: Scalars['String']['output'];
   refresh_token_expires_at: Scalars['DateTimeISO']['output'];
@@ -767,6 +827,7 @@ export type Worker = {
   registration_token_id: Scalars['String']['output'];
   signature: Scalars['String']['output'];
   system_info: Scalars['JSON']['output'];
+  tags?: Maybe<Scalars['String']['output']>;
   updated_at: Scalars['DateTimeISO']['output'];
   user_id: Scalars['String']['output'];
   version?: Maybe<Scalars['String']['output']>;
@@ -868,6 +929,51 @@ export type AdminDatasetUpdateVisibilityMutationVariables = Exact<{
 
 export type AdminDatasetUpdateVisibilityMutation = { __typename?: 'Mutation', adminDatasetUpdateVisibility: { __typename?: 'Dataset', id: string, description?: string | null, tags?: string | null, visibility: DATASET_VISIBILITY, created_at: any, updated_at: any, user_id: string, file_id: string, user: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean }, file: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } } };
 
+export type AdminProcessingQueryVariables = Exact<{
+  processingId: Scalars['String']['input'];
+}>;
+
+
+export type AdminProcessingQuery = { __typename?: 'Query', adminProcessing: { __typename?: 'Processing', id: string, status: PROCESSING_STATUS, visibility: PROCESSING_VISIBILITY, started_at?: any | null, finished_at?: any | null, keep_until?: any | null, verified_at?: any | null, attempts?: number | null, message?: string | null, created_at: any, updated_at: any, processor_id: string, dataset_id: string, result_file_id?: string | null, metrics_file_id?: string | null, worker_id?: string | null, user_id: string, configuration: Array<{ __typename?: 'ProcessingParameter', key: string, value: string }>, processor: { __typename?: 'Processor', id: string, name: string, version: string, image_tag: string, description?: string | null, tags?: string | null, allowed_mime_types: string, visibility: PROCESSOR_VISIBILITY, created_at: any, updated_at: any, configuration: { __typename?: 'ProcessorConfiguration', dataset_input_argument: string, dataset_input_value: string, dataset_output_argument: string, dataset_output_value: string, command: string, output_metrics_file_glob_patterns: Array<string>, parameters: Array<{ __typename?: 'ProcessorParameter', sequence: number, name: string, description: string, type: PROCESSOR_PARAMETER_TYPE, is_required: boolean, default_value?: string | null }> } }, dataset: { __typename?: 'Dataset', id: string, description?: string | null, tags?: string | null, visibility: DATASET_VISIBILITY, created_at: any, updated_at: any, user_id: string, file_id: string, user: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean }, file: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } }, result_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null, metrics_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null } };
+
+export type AdminProcessesQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  workerId?: InputMaybe<Scalars['String']['input']>;
+  resultFileId?: InputMaybe<Scalars['String']['input']>;
+  metricsFileId?: InputMaybe<Scalars['String']['input']>;
+  datasetId?: InputMaybe<Scalars['String']['input']>;
+  processorId?: InputMaybe<Scalars['String']['input']>;
+  started?: InputMaybe<Scalars['Boolean']['input']>;
+  finished?: InputMaybe<Scalars['Boolean']['input']>;
+  status?: InputMaybe<PROCESSING_STATUS>;
+  visibility?: InputMaybe<PROCESSING_VISIBILITY>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  sorting?: InputMaybe<Array<SortingFieldSchema> | SortingFieldSchema>;
+}>;
+
+
+export type AdminProcessesQuery = { __typename?: 'Query', adminProcesses: { __typename?: 'ProcessingPaginationConnection', totalCount: number, edges: Array<{ __typename?: 'ProcessingPaginationEdge', cursor: any, node: { __typename?: 'Processing', id: string, status: PROCESSING_STATUS, visibility: PROCESSING_VISIBILITY, started_at?: any | null, finished_at?: any | null, keep_until?: any | null, verified_at?: any | null, attempts?: number | null, message?: string | null, created_at: any, updated_at: any, processor_id: string, dataset_id: string, result_file_id?: string | null, metrics_file_id?: string | null, worker_id?: string | null, user_id: string, configuration: Array<{ __typename?: 'ProcessingParameter', key: string, value: string }>, processor: { __typename?: 'Processor', id: string, name: string, version: string, image_tag: string, description?: string | null, tags?: string | null, allowed_mime_types: string, visibility: PROCESSOR_VISIBILITY, created_at: any, updated_at: any, configuration: { __typename?: 'ProcessorConfiguration', dataset_input_argument: string, dataset_input_value: string, dataset_output_argument: string, dataset_output_value: string, command: string, output_metrics_file_glob_patterns: Array<string>, parameters: Array<{ __typename?: 'ProcessorParameter', sequence: number, name: string, description: string, type: PROCESSOR_PARAMETER_TYPE, is_required: boolean, default_value?: string | null }> } }, dataset: { __typename?: 'Dataset', id: string, description?: string | null, tags?: string | null, visibility: DATASET_VISIBILITY, created_at: any, updated_at: any, user_id: string, file_id: string, user: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean }, file: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } }, result_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null, metrics_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
+
+export type AdminProcessingDeleteMutationVariables = Exact<{
+  processingId: Scalars['String']['input'];
+}>;
+
+
+export type AdminProcessingDeleteMutation = { __typename?: 'Mutation', adminProcessingDelete: { __typename?: 'Processing', id: string, status: PROCESSING_STATUS, visibility: PROCESSING_VISIBILITY, started_at?: any | null, finished_at?: any | null, keep_until?: any | null, verified_at?: any | null, attempts?: number | null, message?: string | null, created_at: any, updated_at: any, processor_id: string, dataset_id: string, result_file_id?: string | null, metrics_file_id?: string | null, worker_id?: string | null, user_id: string, configuration: Array<{ __typename?: 'ProcessingParameter', key: string, value: string }>, processor: { __typename?: 'Processor', id: string, name: string, version: string, image_tag: string, description?: string | null, tags?: string | null, allowed_mime_types: string, visibility: PROCESSOR_VISIBILITY, created_at: any, updated_at: any, configuration: { __typename?: 'ProcessorConfiguration', dataset_input_argument: string, dataset_input_value: string, dataset_output_argument: string, dataset_output_value: string, command: string, output_metrics_file_glob_patterns: Array<string>, parameters: Array<{ __typename?: 'ProcessorParameter', sequence: number, name: string, description: string, type: PROCESSOR_PARAMETER_TYPE, is_required: boolean, default_value?: string | null }> } }, dataset: { __typename?: 'Dataset', id: string, description?: string | null, tags?: string | null, visibility: DATASET_VISIBILITY, created_at: any, updated_at: any, user_id: string, file_id: string, user: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean }, file: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } }, result_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null, metrics_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null } };
+
+export type AdminProcessingUpdateMutationVariables = Exact<{
+  processingId: Scalars['String']['input'];
+  data: AdminProcessingUpdateSchema;
+}>;
+
+
+export type AdminProcessingUpdateMutation = { __typename?: 'Mutation', adminProcessingUpdate: { __typename?: 'Processing', id: string, status: PROCESSING_STATUS, visibility: PROCESSING_VISIBILITY, started_at?: any | null, finished_at?: any | null, keep_until?: any | null, verified_at?: any | null, attempts?: number | null, message?: string | null, created_at: any, updated_at: any, processor_id: string, dataset_id: string, result_file_id?: string | null, metrics_file_id?: string | null, worker_id?: string | null, user_id: string, configuration: Array<{ __typename?: 'ProcessingParameter', key: string, value: string }>, processor: { __typename?: 'Processor', id: string, name: string, version: string, image_tag: string, description?: string | null, tags?: string | null, allowed_mime_types: string, visibility: PROCESSOR_VISIBILITY, created_at: any, updated_at: any, configuration: { __typename?: 'ProcessorConfiguration', dataset_input_argument: string, dataset_input_value: string, dataset_output_argument: string, dataset_output_value: string, command: string, output_metrics_file_glob_patterns: Array<string>, parameters: Array<{ __typename?: 'ProcessorParameter', sequence: number, name: string, description: string, type: PROCESSOR_PARAMETER_TYPE, is_required: boolean, default_value?: string | null }> } }, dataset: { __typename?: 'Dataset', id: string, description?: string | null, tags?: string | null, visibility: DATASET_VISIBILITY, created_at: any, updated_at: any, user_id: string, file_id: string, user: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean }, file: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } }, result_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null, metrics_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null } };
+
 export type AdminProcessorQueryVariables = Exact<{
   processorId: Scalars['String']['input'];
 }>;
@@ -915,7 +1021,7 @@ export type AdminWorkerQueryVariables = Exact<{
 }>;
 
 
-export type AdminWorkerQuery = { __typename?: 'Query', adminWorker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null } };
+export type AdminWorkerQuery = { __typename?: 'Query', adminWorker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type AdminWorkersQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['String']['input']>;
@@ -931,14 +1037,22 @@ export type AdminWorkersQueryVariables = Exact<{
 }>;
 
 
-export type AdminWorkersQuery = { __typename?: 'Query', adminWorkers: { __typename?: 'WorkerPaginationConnection', totalCount: number, edges: Array<{ __typename?: 'WorkerPaginationEdge', cursor: any, node: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
+export type AdminWorkersQuery = { __typename?: 'Query', adminWorkers: { __typename?: 'WorkerPaginationConnection', totalCount: number, edges: Array<{ __typename?: 'WorkerPaginationEdge', cursor: any, node: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
+
+export type AdminWorkerUpdateMutationVariables = Exact<{
+  workerId: Scalars['String']['input'];
+  data: AdminWorkerUpdateSchema;
+}>;
+
+
+export type AdminWorkerUpdateMutation = { __typename?: 'Mutation', adminWorkerUpdate: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type AdminWorkerDeleteMutationVariables = Exact<{
   workerId: Scalars['String']['input'];
 }>;
 
 
-export type AdminWorkerDeleteMutation = { __typename?: 'Mutation', adminWorkerDelete: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null } };
+export type AdminWorkerDeleteMutation = { __typename?: 'Mutation', adminWorkerDelete: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type AdminWorkerRegistrationTokenQueryVariables = Exact<{
   workerRegistrationTokenId: Scalars['String']['input'];
@@ -1064,13 +1178,13 @@ export type UserProcessesQueryVariables = Exact<{
   finished?: InputMaybe<Scalars['Boolean']['input']>;
   status?: InputMaybe<PROCESSING_STATUS>;
   visibility?: InputMaybe<PROCESSING_VISIBILITY>;
-  sorting?: InputMaybe<Array<SortingFieldSchema> | SortingFieldSchema>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   take?: InputMaybe<Scalars['Int']['input']>;
   after?: InputMaybe<Scalars['ConnectionCursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   before?: InputMaybe<Scalars['ConnectionCursor']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  sorting?: InputMaybe<Array<SortingFieldSchema> | SortingFieldSchema>;
 }>;
 
 
@@ -1160,12 +1274,12 @@ export type UserSessionsCloseMutation = { __typename?: 'Mutation', userSessionsC
 
 export type WorkerRegistrationTokenFragmentFragment = { __typename?: 'WorkerRegistrationToken', archived_at?: any | null, created_at: any, expires_at?: any | null, id: string, is_unlimited_usage: boolean, token: string, updated_at: any, user_id: string };
 
-export type WorkerFragmentFragment = { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null };
+export type WorkerFragmentFragment = { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null };
 
 export type WorkerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkerQuery = { __typename?: 'Query', worker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null } };
+export type WorkerQuery = { __typename?: 'Query', worker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type WorkerProcessingQueryVariables = Exact<{
   processingId: Scalars['String']['input'];
@@ -1233,7 +1347,7 @@ export type WorkerRegisterMutationVariables = Exact<{
 }>;
 
 
-export type WorkerRegisterMutation = { __typename?: 'Mutation', workerRegister: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null } };
+export type WorkerRegisterMutation = { __typename?: 'Mutation', workerRegister: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type WorkerUpdateAccessTokenMutationVariables = Exact<{
   internalId: Scalars['String']['input'];
@@ -1257,4 +1371,4 @@ export type WorkerUpdateRefreshTokenMutationVariables = Exact<{
 }>;
 
 
-export type WorkerUpdateRefreshTokenMutation = { __typename?: 'Mutation', workerUpdateRefreshToken: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, updated_at: any, user_id: string, version?: string | null } };
+export type WorkerUpdateRefreshTokenMutation = { __typename?: 'Mutation', workerUpdateRefreshToken: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };

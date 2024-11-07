@@ -11,6 +11,16 @@ input AdminDatasetUpdateVisibilitySchema {
   visibility: DATASET_VISIBILITY!
 }
 
+input AdminProcessingUpdateSchema {
+  keep_until: DateTimeISO!
+  visibility: PROCESSING_VISIBILITY
+}
+
+input AdminWorkerUpdateSchema {
+  description: String
+  tags: String
+}
+
 """Cursor for pagination"""
 scalar ConnectionCursor
 
@@ -101,12 +111,15 @@ type Mutation {
   adminDatasetDelete(dataset_id: String!): Dataset!
   adminDatasetUpdate(data: AdminDatasetUpdateSchema!, dataset_id: String!): Dataset!
   adminDatasetUpdateVisibility(data: AdminDatasetUpdateVisibilitySchema!, dataset_id: String!): Dataset!
+  adminProcessingDelete(processing_id: String!): Processing!
+  adminProcessingUpdate(data: AdminProcessingUpdateSchema!, processing_id: String!): Processing!
   adminProcessorCreate(data: ProcessorSchema!): Processor!
   adminProcessorDelete(processor_id: String!): Processor!
   adminProcessorUpdate(data: ProcessorSchema!, processor_id: String!): Processor!
   adminWorkerDelete(worker_id: String!): Worker!
   adminWorkerRegistrationTokenCreate(data: WorkerRegistrationTokenCreateSchema!): WorkerRegistrationToken!
   adminWorkerRegistrationTokenDelete(worker_registration_token_id: String!): WorkerRegistrationToken!
+  adminWorkerUpdate(data: AdminWorkerUpdateSchema!, worker_id: String!): Worker!
   userDatasetCreate(data: UserDatasetCreateSchema!): Dataset!
   userDatasetDelete(dataset_id: String!): Dataset!
   userDatasetRequestPublication(dataset_id: String!): Dataset!
@@ -284,6 +297,8 @@ input ProcessorSchema {
 type Query {
   adminDataset(dataset_id: String!): Dataset!
   adminDatasets(after: ConnectionCursor, before: ConnectionCursor, file_id: String, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String, visibility: DATASET_VISIBILITY): DatasetPaginationConnection!
+  adminProcesses(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, metrics_file_id: String, processor_id: String, result_file_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, user_id: String, visibility: PROCESSING_VISIBILITY, worker_id: String): ProcessingPaginationConnection!
+  adminProcessing(processing_id: String!): Processing!
   adminProcessor(processor_id: String!): Processor!
   adminProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
   adminWorker(worker_id: String!): Worker!
@@ -400,8 +415,10 @@ type Worker {
   agent_info: JSON!
   archived_at: DateTimeISO
   created_at: DateTimeISO!
+  description: String
   id: ID!
   internal_id: String!
+  last_seen_at: DateTimeISO
   payload: JSON!
   refresh_token: String!
   refresh_token_expires_at: DateTimeISO!
@@ -409,6 +426,7 @@ type Worker {
   registration_token_id: String!
   signature: String!
   system_info: JSON!
+  tags: String
   updated_at: DateTimeISO!
   user_id: String!
   version: String
