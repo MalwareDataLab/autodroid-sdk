@@ -111,11 +111,13 @@ type Mutation {
   adminDatasetDelete(dataset_id: String!): Dataset!
   adminDatasetUpdate(data: AdminDatasetUpdateSchema!, dataset_id: String!): Dataset!
   adminDatasetUpdateVisibility(data: AdminDatasetUpdateVisibilitySchema!, dataset_id: String!): Dataset!
+  adminProcessingCleanExpired: Int!
   adminProcessingDelete(processing_id: String!): Processing!
   adminProcessingUpdate(data: AdminProcessingUpdateSchema!, processing_id: String!): Processing!
   adminProcessorCreate(data: ProcessorSchema!): Processor!
   adminProcessorDelete(processor_id: String!): Processor!
   adminProcessorUpdate(data: ProcessorSchema!, processor_id: String!): Processor!
+  adminWorkerCleanMissing: Int!
   adminWorkerDelete(worker_id: String!): Worker!
   adminWorkerRegistrationTokenCreate(data: WorkerRegistrationTokenCreateSchema!): WorkerRegistrationToken!
   adminWorkerRegistrationTokenDelete(worker_registration_token_id: String!): WorkerRegistrationToken!

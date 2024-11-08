@@ -28,6 +28,7 @@ export const WORKER_FRAGMENT = gql(`
     system_info
     description
     tags
+    last_seen_at
     updated_at
     user_id
     version
