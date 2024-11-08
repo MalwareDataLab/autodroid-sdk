@@ -11,6 +11,8 @@ import {
   AdminProcessesQueryVariables,
   AdminProcessingUpdateMutation,
   AdminProcessingUpdateMutationVariables,
+  AdminProcessingCleanExpiredMutationVariables,
+  AdminProcessingCleanExpiredMutation,
 } from '@api/gql/graphql';
 
 import {
@@ -18,6 +20,7 @@ import {
   ADMIN_PROCESSING_GET_ONE_QUERY,
   ADMIN_PROCESSING_UPDATE_MUTATION,
   ADMIN_PROCESSING_GET_MANY_QUERY,
+  ADMIN_PROCESSING_CLEAN_EXPIRED_MUTATION,
 } from './queries';
 
 export class AdminProcessing {
@@ -61,5 +64,15 @@ export class AdminProcessing {
       variables,
     });
     return data!.adminProcessingDelete;
+  }
+
+  public async cleanExpired(
+    variables: AdminProcessingCleanExpiredMutationVariables,
+  ): Promise<Res<AdminProcessingCleanExpiredMutation>> {
+    const { data } = await this.context.apolloClient.mutate({
+      mutation: ADMIN_PROCESSING_CLEAN_EXPIRED_MUTATION,
+      variables,
+    });
+    return data!.adminProcessingCleanExpired;
   }
 }

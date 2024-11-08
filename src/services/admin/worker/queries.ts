@@ -153,3 +153,9 @@ export const ADMIN_WORKER_REGISTRATION_TOKEN_DELETE_MUTATION = gql(`
     }
   }
 `);
+
+export const ADMIN_WORKER_CLEAN_MISSING_MUTATION = gql(`
+  mutation AdminWorkerCleanMissing {
+    adminWorkerCleanMissing
+  }
+`);

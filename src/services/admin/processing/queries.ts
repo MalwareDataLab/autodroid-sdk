@@ -93,3 +93,9 @@ export const ADMIN_PROCESSING_UPDATE_MUTATION = gql(`
     }
   }
 `);
+
+export const ADMIN_PROCESSING_CLEAN_EXPIRED_MUTATION = gql(`
+  mutation AdminProcessingCleanExpired {
+    adminProcessingCleanExpired
+  }
+`);

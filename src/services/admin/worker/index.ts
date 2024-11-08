@@ -3,6 +3,8 @@ import type { AutoDroidSdk } from '@package';
 import { Res } from '@utils/response.type';
 
 import {
+  AdminWorkerCleanMissingMutation,
+  AdminWorkerCleanMissingMutationVariables,
   AdminWorkerDeleteMutation,
   AdminWorkerDeleteMutationVariables,
   AdminWorkerQuery,
@@ -27,6 +29,7 @@ import {
   ADMIN_WORKER_REGISTRATION_TOKEN_GET_MANY_QUERY,
   ADMIN_WORKER_REGISTRATION_TOKEN_CREATE_MUTATION,
   ADMIN_WORKER_REGISTRATION_TOKEN_DELETE_MUTATION,
+  ADMIN_WORKER_CLEAN_MISSING_MUTATION,
 } from './queries';
 
 export class AdminWorker {
@@ -100,5 +103,15 @@ export class AdminWorker {
       variables,
     });
     return data!.adminWorkerRegistrationTokenDelete;
+  }
+
+  public async cleanMissing(
+    variables: AdminWorkerCleanMissingMutationVariables,
+  ): Promise<Res<AdminWorkerCleanMissingMutation>> {
+    const { data } = await this.context.apolloClient.mutate({
+      mutation: ADMIN_WORKER_CLEAN_MISSING_MUTATION,
+      variables,
+    });
+    return data!.adminWorkerCleanMissing;
   }
 }
