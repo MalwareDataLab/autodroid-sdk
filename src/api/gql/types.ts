@@ -1028,7 +1028,7 @@ export type AdminWorkerQueryVariables = Exact<{
 }>;
 
 
-export type AdminWorkerQuery = { __typename?: 'Query', adminWorker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
+export type AdminWorkerQuery = { __typename?: 'Query', adminWorker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type AdminWorkersQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['String']['input']>;
@@ -1044,7 +1044,7 @@ export type AdminWorkersQueryVariables = Exact<{
 }>;
 
 
-export type AdminWorkersQuery = { __typename?: 'Query', adminWorkers: { __typename?: 'WorkerPaginationConnection', totalCount: number, edges: Array<{ __typename?: 'WorkerPaginationEdge', cursor: any, node: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
+export type AdminWorkersQuery = { __typename?: 'Query', adminWorkers: { __typename?: 'WorkerPaginationConnection', totalCount: number, edges: Array<{ __typename?: 'WorkerPaginationEdge', cursor: any, node: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
 
 export type AdminWorkerUpdateMutationVariables = Exact<{
   workerId: Scalars['String']['input'];
@@ -1052,14 +1052,14 @@ export type AdminWorkerUpdateMutationVariables = Exact<{
 }>;
 
 
-export type AdminWorkerUpdateMutation = { __typename?: 'Mutation', adminWorkerUpdate: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
+export type AdminWorkerUpdateMutation = { __typename?: 'Mutation', adminWorkerUpdate: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type AdminWorkerDeleteMutationVariables = Exact<{
   workerId: Scalars['String']['input'];
 }>;
 
 
-export type AdminWorkerDeleteMutation = { __typename?: 'Mutation', adminWorkerDelete: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
+export type AdminWorkerDeleteMutation = { __typename?: 'Mutation', adminWorkerDelete: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type AdminWorkerRegistrationTokenQueryVariables = Exact<{
   workerRegistrationTokenId: Scalars['String']['input'];
@@ -1286,12 +1286,12 @@ export type UserSessionsCloseMutation = { __typename?: 'Mutation', userSessionsC
 
 export type WorkerRegistrationTokenFragmentFragment = { __typename?: 'WorkerRegistrationToken', archived_at?: any | null, created_at: any, expires_at?: any | null, id: string, is_unlimited_usage: boolean, token: string, updated_at: any, user_id: string };
 
-export type WorkerFragmentFragment = { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null };
+export type WorkerFragmentFragment = { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null };
 
 export type WorkerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkerQuery = { __typename?: 'Query', worker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
+export type WorkerQuery = { __typename?: 'Query', worker: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type WorkerProcessingQueryVariables = Exact<{
   processingId: Scalars['String']['input'];
@@ -1359,7 +1359,7 @@ export type WorkerRegisterMutationVariables = Exact<{
 }>;
 
 
-export type WorkerRegisterMutation = { __typename?: 'Mutation', workerRegister: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
+export type WorkerRegisterMutation = { __typename?: 'Mutation', workerRegister: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } };
 
 export type WorkerUpdateAccessTokenMutationVariables = Exact<{
   internalId: Scalars['String']['input'];
@@ -1383,4 +1383,4 @@ export type WorkerUpdateRefreshTokenMutationVariables = Exact<{
 }>;
 
 
-export type WorkerUpdateRefreshTokenMutation = { __typename?: 'Mutation', workerUpdateRefreshToken: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, updated_at: any, user_id: string, version?: string | null } };
+export type WorkerUpdateRefreshTokenMutation = { __typename?: 'Mutation', workerUpdateRefreshToken: { __typename?: 'Worker', agent_info: any, archived_at?: any | null, created_at: any, id: string, internal_id: string, payload: any, refresh_token: string, refresh_token_expires_at: any, registration_token_id: string, signature: string, system_info: any, description?: string | null, tags?: string | null, last_seen_at?: any | null, updated_at: any, user_id: string, version?: string | null } };
