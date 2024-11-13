@@ -132,6 +132,7 @@ type Mutation {
   userRequestDatasetProcessing(data: RequestDatasetProcessingSchema!): Processing!
   userSessionsClose: UserAuthProviderConn!
   userUpdateData(data: UserUpdateDataSchema!): User!
+  userUpdateLearningData(data: JSON!): User!
   workerProcessingCaptureMetricsFileUpload(processing_id: String!): File!
   workerProcessingCaptureResultFileUpload(processing_id: String!): File!
   workerProcessingGenerateMetricsFileUpload(data: RequestFileUploadSignedUrlSchema!, processing_id: String!): File!

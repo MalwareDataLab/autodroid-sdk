@@ -160,6 +160,7 @@ export type Mutation = {
   userRequestDatasetProcessing: Processing;
   userSessionsClose: UserAuthProviderConn;
   userUpdateData: User;
+  userUpdateLearningData: User;
   workerProcessingCaptureMetricsFileUpload: File;
   workerProcessingCaptureResultFileUpload: File;
   workerProcessingGenerateMetricsFileUpload: File;
@@ -283,6 +284,11 @@ export type MutationuserRequestDatasetProcessingArgs = {
 
 export type MutationuserUpdateDataArgs = {
   data: UserUpdateDataSchema;
+};
+
+
+export type MutationuserUpdateLearningDataArgs = {
+  data: Scalars['JSON']['input'];
 };
 
 
@@ -1283,6 +1289,13 @@ export type UserSessionsCloseMutationVariables = Exact<{ [key: string]: never; }
 
 
 export type UserSessionsCloseMutation = { __typename?: 'Mutation', userSessionsClose: { __typename?: 'UserAuthProviderConn', id: string, auth_provider: AUTH_PROVIDER, code: string, disconnected_at?: any | null, created_at: any, updated_at: any, user_id: string } };
+
+export type UserUpdateLearningDataMutationVariables = Exact<{
+  data: Scalars['JSON']['input'];
+}>;
+
+
+export type UserUpdateLearningDataMutation = { __typename?: 'Mutation', userUpdateLearningData: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean } };
 
 export type WorkerRegistrationTokenFragmentFragment = { __typename?: 'WorkerRegistrationToken', archived_at?: any | null, created_at: any, expires_at?: any | null, id: string, is_unlimited_usage: boolean, token: string, updated_at: any, user_id: string };
 
