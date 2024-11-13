@@ -67,6 +67,7 @@ const documents = {
     "\n  query Session {\n    session {\n      ...SessionFragment\n    }\n  }\n": types.SessionDocument,
     "\n  mutation UserUpdateData($data: UserUpdateDataSchema!) {\n    userUpdateData(data: $data) {\n      ...UserFragment\n    }\n  }\n": types.UserUpdateDataDocument,
     "\n  mutation UserSessionsClose {\n    userSessionsClose {\n      ...UserAuthProviderConnFragment\n    }\n  }\n": types.UserSessionsCloseDocument,
+    "\n  mutation UserUpdateLearningData($data: JSON!) {\n    userUpdateLearningData(data: $data) {\n      ...UserFragment\n    }\n  }\n": types.UserUpdateLearningDataDocument,
     "\n  fragment WorkerRegistrationTokenFragment on WorkerRegistrationToken {\n    archived_at\n    created_at\n    expires_at\n    id\n    is_unlimited_usage\n    token\n    updated_at\n    user_id\n  }\n": types.WorkerRegistrationTokenFragmentFragmentDoc,
     "\n  fragment WorkerFragment on Worker {\n    agent_info\n    archived_at\n    created_at\n    id\n    internal_id\n    payload\n    refresh_token\n    refresh_token_expires_at\n    registration_token_id\n    signature\n    system_info\n    description\n    tags\n    last_seen_at\n    updated_at\n    user_id\n    version\n  }\n": types.WorkerFragmentFragmentDoc,
     "\n  query Worker {\n    worker {\n      ...WorkerFragment\n    }\n  }\n": types.WorkerDocument,
@@ -309,6 +310,10 @@ export function gql(source: "\n  mutation UserUpdateData($data: UserUpdateDataSc
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation UserSessionsClose {\n    userSessionsClose {\n      ...UserAuthProviderConnFragment\n    }\n  }\n"): (typeof documents)["\n  mutation UserSessionsClose {\n    userSessionsClose {\n      ...UserAuthProviderConnFragment\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation UserUpdateLearningData($data: JSON!) {\n    userUpdateLearningData(data: $data) {\n      ...UserFragment\n    }\n  }\n"): (typeof documents)["\n  mutation UserUpdateLearningData($data: JSON!) {\n    userUpdateLearningData(data: $data) {\n      ...UserFragment\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

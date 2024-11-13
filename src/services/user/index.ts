@@ -8,6 +8,8 @@ import type {
   UserSessionsCloseMutationVariables,
   UserUpdateDataMutation,
   UserUpdateDataMutationVariables,
+  UserUpdateLearningDataMutation,
+  UserUpdateLearningDataMutationVariables,
 } from '@gql/graphql';
 
 import {
@@ -15,6 +17,7 @@ import {
   USER_QUERY,
   USER_SESSIONS_CLOSE_MUTATION,
   USER_UPDATE_DATA_MUTATION,
+  USER_UPDATE_LEARNING_DATA_MUTATION,
 } from './queries';
 
 export class User {
@@ -42,6 +45,16 @@ export class User {
       variables,
     });
     return data!.userUpdateData;
+  }
+
+  public async updateLearningData(
+    variables: UserUpdateLearningDataMutationVariables,
+  ): Promise<Res<UserUpdateLearningDataMutation>> {
+    const { data } = await this.context.apolloClient.mutate({
+      mutation: USER_UPDATE_LEARNING_DATA_MUTATION,
+      variables,
+    });
+    return data!.userUpdateLearningData;
   }
 
   public async closeSessions(

@@ -31,3 +31,11 @@ export const USER_SESSIONS_CLOSE_MUTATION = gql(`
     }
   }
 `);
+
+export const USER_UPDATE_LEARNING_DATA_MUTATION = gql(`
+  mutation UserUpdateLearningData($data: JSON!) {
+    userUpdateLearningData(data: $data) {
+      ...UserFragment
+    }
+  }
+`);
