@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.1.0
+
+### Minor Changes
+
+- dc8ed8c: add learning data
+
 ## 0.0.6
 
 ### Patch Changes
