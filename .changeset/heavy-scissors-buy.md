@@ -1,0 +1,5 @@
+---
+"autodroid": patch
+---
+
+update docs

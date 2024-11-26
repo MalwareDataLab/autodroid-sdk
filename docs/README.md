@@ -9,6 +9,8 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![Version](https://img.shields.io/npm/v/autodroid.svg)](https://www.npmjs.org/package/autodroid)
+[![Build Status](https://github.com/MalwareDataLab/autodroid-sdk/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/MalwareDataLab/autodroid-sdk/actions?query=branch%3Amain)
 
 </div>
 
