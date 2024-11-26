@@ -18,7 +18,8 @@
     "sdk",
     "api",
     "typescript",
-    "graphql"
+    "graphql",
+    "genai"
   ],
   "type": "module",
   "module": "./dist/index.js",
