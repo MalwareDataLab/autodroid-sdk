@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.1.3
+
+### Patch Changes
+
+- 4094b70: update docs
+
 ## 0.1.2
 
 ### Patch Changes
