@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.1.4
+
+### Patch Changes
+
+- 96cdfe0: update package json repository reference
+
 ## 0.1.3
 
 ### Patch Changes
