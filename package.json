@@ -8,10 +8,10 @@
   "homepage": "https://malwaredatalab.github.io/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/luizfelipelaviola/autodroid-sdk"
+    "url": "git+https://github.com/MalwareDataLab/autodroid-sdk"
   },
   "bugs": {
-    "url": "https://github.com/luizfelipelaviola/autodroid-sdk/issues"
+    "url": "https://github.com/MalwareDataLab/autodroid-sdk/issues"
   },
   "keywords": [
     "autodroid",
