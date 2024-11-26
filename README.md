@@ -24,7 +24,7 @@
 - [✨ Visão Geral do Projeto](#overview)
 - [⛏️ Tecnologias Utilizadas](#built_using)
 - [🤝🏻 Contribuições](./docs/CONTRIBUTING.md)
-- [💾 Changelog](./docs/CHANGELOG.md)
+- [💾 Changelog](./CHANGELOG.md)
 - [📖 Referências](#bibliography)
 
 ## 📖 Sobre <a name = "about"></a>
