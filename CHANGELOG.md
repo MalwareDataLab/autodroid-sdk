@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.1.1
+
+### Patch Changes
+
+- 07b82a3: update docs
+
 ## 0.1.0
 
 ### Minor Changes
