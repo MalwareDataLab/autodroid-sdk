@@ -2,9 +2,10 @@
   "name": "autodroid",
   "private": false,
   "version": "0.1.1",
-  "description": "SDK for the AutoDroid API",
+  "description": "SDK client for Autodroid API",
   "license": "MIT",
   "author": "Luiz Felipe Laviola <luiz@laviola.dev>",
+  "homepage": "https://malwaredatalab.github.io/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/luizfelipelaviola/autodroid-sdk"
@@ -12,6 +13,13 @@
   "bugs": {
     "url": "https://github.com/luizfelipelaviola/autodroid-sdk/issues"
   },
+  "keywords": [
+    "autodroid",
+    "sdk",
+    "api",
+    "typescript",
+    "graphql"
+  ],
   "type": "module",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

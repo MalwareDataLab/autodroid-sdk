@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
-    <img width="200px" height="200px" src="./assets/logo.png" alt="Project logo" style="fill:#000000">
+    <img width="200px" height="200px" src="./docs/assets/logo.png" alt="Project logo" style="fill:#000000">
   </a>
 </p>
 
@@ -23,8 +23,8 @@
 - [👨🏻‍💻 Utilização](#usage)
 - [✨ Visão Geral do Projeto](#overview)
 - [⛏️ Tecnologias Utilizadas](#built_using)
-- [🤝🏻 Contribuições](./CONTRIBUTING.md)
-- [💾 Changelog](./CHANGELOG.md)
+- [🤝🏻 Contribuições](./docs/CONTRIBUTING.md)
+- [💾 Changelog](./docs/CHANGELOG.md)
 - [📖 Referências](#bibliography)
 
 ## 📖 Sobre <a name = "about"></a>
@@ -117,7 +117,7 @@ start();
 
 A API está inserida no contexto do projeto AutoDroid, que é uma aplicação que visa oferecer a ferramenta DroidAugmentor/MalSynGen como um serviço.
 
-<img src="./assets/system-context.jpg" alt="Overview" style="fill:#000000">
+<img src="./docs/assets/system-context.jpg" alt="Overview" style="fill:#000000">
 
 ## ⛏️ Tecnologias Utilizadas <a name = "built_using"></a>
 
