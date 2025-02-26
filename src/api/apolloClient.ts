@@ -3,7 +3,7 @@ import {
   InMemoryCache,
   createHttpLink,
   ApolloLink,
-} from '@apollo/client';
+} from '@apollo/client/core';
 import { onError } from '@apollo/client/link/error';
 import { NetworkError } from '@apollo/client/errors';
 import { setContext } from '@apollo/client/link/context';
@@ -16,6 +16,7 @@ import {
   Kind,
   buildClientSchema,
 } from 'graphql';
+import { DateTimeISOResolver } from 'graphql-scalars';
 
 import introspectionResult from './gql/schema.graphql.json' assert { type: 'json' };
 
@@ -104,6 +105,7 @@ export const createApolloClient = ({
     schema,
     typesMap: {
       BigInt: BigIntScalar,
+      DateTimeISO: DateTimeISOResolver,
     },
   });
 

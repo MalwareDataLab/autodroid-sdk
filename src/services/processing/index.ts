@@ -1,4 +1,3 @@
-import type { AutoDroidSdk } from '@package';
 import type { Res } from '@utils/response.type';
 
 import type {
@@ -14,6 +13,10 @@ import type {
   UserProcessingUpdateVisibilityMutationVariables,
   UserProcessingExtendKeepUntilMutation,
   UserProcessingExtendKeepUntilMutationVariables,
+  UserProcessingTimeEstimationQueryVariables,
+  UserProcessingTimeEstimationQuery,
+  UserProcessingEstimatedFinishQueryVariables,
+  UserProcessingEstimatedFinishQuery,
 } from '@gql/graphql';
 
 import {
@@ -23,7 +26,10 @@ import {
   USER_PROCESSING_REQUEST_DATASET_PROCESSING_MUTATION,
   USER_PROCESSING_UPDATE_VISIBILITY_MUTATION,
   USER_PROCESSING_EXTEND_KEEP_UNTIL_MUTATION,
+  USER_PROCESSING_EXECUTION_TIME_ESTIMATION_QUERY,
+  USER_PROCESSING_FINISH_TIME_ESTIMATION_QUERY,
 } from './queries';
+import { AutoDroidSdk } from '../..';
 
 export class Processing {
   constructor(private context: AutoDroidSdk) {}
@@ -86,5 +92,25 @@ export class Processing {
       variables,
     });
     return data!.userProcessingDelete;
+  }
+
+  public async getExecutionTimeEstimation(
+    variables: UserProcessingTimeEstimationQueryVariables,
+  ): Promise<Res<UserProcessingTimeEstimationQuery>> {
+    const { data } = await this.context.apolloClient.query({
+      query: USER_PROCESSING_EXECUTION_TIME_ESTIMATION_QUERY,
+      variables,
+    });
+    return data.userProcessingTimeEstimation;
+  }
+
+  public async getFinishTimeEstimation(
+    variables: UserProcessingEstimatedFinishQueryVariables,
+  ): Promise<Res<UserProcessingEstimatedFinishQuery>> {
+    const { data } = await this.context.apolloClient.query({
+      query: USER_PROCESSING_FINISH_TIME_ESTIMATION_QUERY,
+      variables,
+    });
+    return data.userProcessingEstimatedFinish;
   }
 }

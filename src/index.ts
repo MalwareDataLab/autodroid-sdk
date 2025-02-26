@@ -1,4 +1,4 @@
-import { ApolloClient } from '@apollo/client';
+import { ApolloClient } from '@apollo/client/core';
 
 import { IAutoDroidSdkParams, createApolloClient } from '@api/apolloClient';
 

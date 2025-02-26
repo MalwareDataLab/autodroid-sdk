@@ -111,3 +111,32 @@ export const USER_PROCESSING_DELETE_MUTATION = gql(`
     }
   }
 `);
+
+export const USER_PROCESSING_EXECUTION_TIME_ESTIMATION_QUERY = gql(`
+  query UserProcessingTimeEstimation($datasetId: String!, $processorId: String!) {
+    userProcessingTimeEstimation(
+      dataset_id: $datasetId
+      processor_id: $processorId
+    ) {
+      dataset_id
+      processor_id
+      estimated_waiting_time
+      estimated_execution_time
+      estimated_total_time
+    }
+  }
+`);
+
+export const USER_PROCESSING_FINISH_TIME_ESTIMATION_QUERY = gql(`
+  query UserProcessingEstimatedFinish($processingId: String!) {
+    userProcessingEstimatedFinish(
+      processing_id: $processingId
+    ) {
+      dataset_id
+      processor_id
+      processing_id
+      estimated_start_time
+      estimated_finish_time
+    }
+  }
+`);
