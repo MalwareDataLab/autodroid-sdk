@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.2.0
+
+### Minor Changes
+
+- f38a54d: add processing time estimate
+
 ## 0.1.4
 
 ### Patch Changes
