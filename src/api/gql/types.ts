@@ -139,8 +139,10 @@ export type Mutation = {
   adminDatasetDelete: Dataset;
   adminDatasetUpdate: Dataset;
   adminDatasetUpdateVisibility: Dataset;
+  adminFileRemoveAllDangling: Scalars['Int']['output'];
   adminProcessingCleanExpired: Scalars['Int']['output'];
   adminProcessingDelete: Processing;
+  adminProcessingFailDangling: Scalars['Int']['output'];
   adminProcessingUpdate: Processing;
   adminProcessorCreate: Processor;
   adminProcessorDelete: Processor;
@@ -193,6 +195,12 @@ export type MutationadminDatasetUpdateVisibilityArgs = {
 
 export type MutationadminProcessingDeleteArgs = {
   processing_id: Scalars['String']['input'];
+};
+
+
+export type MutationadminProcessingFailDanglingArgs = {
+  created_at_end_date?: InputMaybe<Scalars['DateTimeISO']['input']>;
+  status?: InputMaybe<PROCESSING_STATUS>;
 };
 
 
@@ -390,6 +398,7 @@ export type PageInfo = {
 
 export type Processing = {
   __typename?: 'Processing';
+  archived_at?: Maybe<Scalars['DateTimeISO']['output']>;
   attempts?: Maybe<Scalars['Int']['output']>;
   configuration: Array<ProcessingParameter>;
   created_at: Scalars['DateTimeISO']['output'];
@@ -416,6 +425,15 @@ export type Processing = {
   worker_id?: Maybe<Scalars['String']['output']>;
 };
 
+export type ProcessingFinishTimeEstimation = {
+  __typename?: 'ProcessingFinishTimeEstimation';
+  dataset_id: Scalars['String']['output'];
+  estimated_finish_time?: Maybe<Scalars['DateTimeISO']['output']>;
+  estimated_start_time?: Maybe<Scalars['DateTimeISO']['output']>;
+  processing_id: Scalars['String']['output'];
+  processor_id: Scalars['String']['output'];
+};
+
 export type ProcessingPaginationConnection = {
   __typename?: 'ProcessingPaginationConnection';
   edges: Array<ProcessingPaginationEdge>;
@@ -433,6 +451,18 @@ export type ProcessingParameter = {
   __typename?: 'ProcessingParameter';
   key: Scalars['String']['output'];
   value: Scalars['String']['output'];
+};
+
+export type ProcessingTimeEstimation = {
+  __typename?: 'ProcessingTimeEstimation';
+  dataset_id: Scalars['String']['output'];
+  /** Estimated execution time in seconds after the start of the processing. */
+  estimated_execution_time?: Maybe<Scalars['Int']['output']>;
+  /** Estimated total time in seconds before the end of the processing. */
+  estimated_total_time?: Maybe<Scalars['Int']['output']>;
+  /** Estimated waiting time in seconds before the start of the processing to acquire the available worker. */
+  estimated_waiting_time?: Maybe<Scalars['Int']['output']>;
+  processor_id: Scalars['String']['output'];
 };
 
 export type Processor = {
@@ -556,6 +586,8 @@ export type Query = {
   userDatasets: DatasetPaginationConnection;
   userProcesses: ProcessingPaginationConnection;
   userProcessing: Processing;
+  userProcessingEstimatedFinish: ProcessingFinishTimeEstimation;
+  userProcessingTimeEstimation: ProcessingTimeEstimation;
   userProcessor: Processor;
   userProcessors: ProcessorPaginationConnection;
   worker: Worker;
@@ -585,9 +617,14 @@ export type QueryadminDatasetsArgs = {
 export type QueryadminProcessesArgs = {
   after?: InputMaybe<Scalars['ConnectionCursor']['input']>;
   before?: InputMaybe<Scalars['ConnectionCursor']['input']>;
+  created_at_end_date?: InputMaybe<Scalars['DateTimeISO']['input']>;
+  created_at_start_date?: InputMaybe<Scalars['DateTimeISO']['input']>;
   dataset_id?: InputMaybe<Scalars['String']['input']>;
   finished?: InputMaybe<Scalars['Boolean']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  include_archived?: InputMaybe<Scalars['Boolean']['input']>;
+  keep_until_end_date?: InputMaybe<Scalars['DateTimeISO']['input']>;
+  keep_until_start_date?: InputMaybe<Scalars['DateTimeISO']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   metrics_file_id?: InputMaybe<Scalars['String']['input']>;
   processor_id?: InputMaybe<Scalars['String']['input']>;
@@ -658,6 +695,7 @@ export type QueryadminWorkersArgs = {
   before?: InputMaybe<Scalars['ConnectionCursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  missing?: InputMaybe<Scalars['Boolean']['input']>;
   registration_token_id?: InputMaybe<Scalars['String']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   sorting?: InputMaybe<Array<SortingFieldSchema>>;
@@ -701,6 +739,17 @@ export type QueryuserProcessesArgs = {
 
 export type QueryuserProcessingArgs = {
   processing_id: Scalars['String']['input'];
+};
+
+
+export type QueryuserProcessingEstimatedFinishArgs = {
+  processing_id: Scalars['String']['input'];
+};
+
+
+export type QueryuserProcessingTimeEstimationArgs = {
+  dataset_id: Scalars['String']['input'];
+  processor_id: Scalars['String']['input'];
 };
 
 
@@ -828,6 +877,7 @@ export type Worker = {
   id: Scalars['ID']['output'];
   internal_id: Scalars['String']['output'];
   last_seen_at?: Maybe<Scalars['DateTimeISO']['output']>;
+  missing: Scalars['Boolean']['output'];
   payload: Scalars['JSON']['output'];
   refresh_token: Scalars['String']['output'];
   refresh_token_expires_at: Scalars['DateTimeISO']['output'];
@@ -1237,6 +1287,21 @@ export type UserProcessingDeleteMutationVariables = Exact<{
 
 
 export type UserProcessingDeleteMutation = { __typename?: 'Mutation', userProcessingDelete: { __typename?: 'Processing', id: string, status: PROCESSING_STATUS, visibility: PROCESSING_VISIBILITY, started_at?: any | null, finished_at?: any | null, keep_until?: any | null, verified_at?: any | null, attempts?: number | null, message?: string | null, created_at: any, updated_at: any, processor_id: string, dataset_id: string, result_file_id?: string | null, metrics_file_id?: string | null, worker_id?: string | null, user_id: string, configuration: Array<{ __typename?: 'ProcessingParameter', key: string, value: string }>, processor: { __typename?: 'Processor', id: string, name: string, version: string, image_tag: string, description?: string | null, tags?: string | null, allowed_mime_types: string, visibility: PROCESSOR_VISIBILITY, created_at: any, updated_at: any, configuration: { __typename?: 'ProcessorConfiguration', output_metrics_file_glob_patterns: Array<string>, output_result_file_glob_patterns: Array<string>, dataset_input_argument: string, dataset_input_value: string, dataset_output_argument: string, dataset_output_value: string, command: string, parameters: Array<{ __typename?: 'ProcessorParameter', sequence: number, name: string, description: string, type: PROCESSOR_PARAMETER_TYPE, is_required: boolean, default_value?: string | null }> } }, dataset: { __typename?: 'Dataset', id: string, description?: string | null, tags?: string | null, visibility: DATASET_VISIBILITY, created_at: any, updated_at: any, user_id: string, file_id: string, user: { __typename?: 'User', id: string, email: string, name?: string | null, phone_number?: string | null, learning_data: any, language?: string | null, created_at: any, updated_at: any, is_admin: boolean }, file: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } }, result_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null, metrics_file?: { __typename?: 'File', id: string, storage_provider: STORAGE_PROVIDER, provider_path: string, provider_status: FILE_PROVIDER_STATUS, provider_verified_at?: any | null, type: FILE_TYPE, upload_url?: string | null, upload_url_expires_at?: any | null, allow_public_access: boolean, public_url_expires_at?: any | null, filename: string, mime_type: MIME_TYPE, size: number, md5_hash: string, created_at: any, updated_at: any, public_url?: string | null } | null } };
+
+export type UserProcessingTimeEstimationQueryVariables = Exact<{
+  datasetId: Scalars['String']['input'];
+  processorId: Scalars['String']['input'];
+}>;
+
+
+export type UserProcessingTimeEstimationQuery = { __typename?: 'Query', userProcessingTimeEstimation: { __typename?: 'ProcessingTimeEstimation', dataset_id: string, processor_id: string, estimated_waiting_time?: number | null, estimated_execution_time?: number | null, estimated_total_time?: number | null } };
+
+export type UserProcessingEstimatedFinishQueryVariables = Exact<{
+  processingId: Scalars['String']['input'];
+}>;
+
+
+export type UserProcessingEstimatedFinishQuery = { __typename?: 'Query', userProcessingEstimatedFinish: { __typename?: 'ProcessingFinishTimeEstimation', dataset_id: string, processor_id: string, processing_id: string, estimated_start_time?: any | null, estimated_finish_time?: any | null } };
 
 export type ProcessorFragmentFragment = { __typename?: 'Processor', id: string, name: string, version: string, image_tag: string, description?: string | null, tags?: string | null, allowed_mime_types: string, visibility: PROCESSOR_VISIBILITY, created_at: any, updated_at: any, configuration: { __typename?: 'ProcessorConfiguration', output_metrics_file_glob_patterns: Array<string>, output_result_file_glob_patterns: Array<string>, dataset_input_argument: string, dataset_input_value: string, dataset_output_argument: string, dataset_output_value: string, command: string, parameters: Array<{ __typename?: 'ProcessorParameter', sequence: number, name: string, description: string, type: PROCESSOR_PARAMETER_TYPE, is_required: boolean, default_value?: string | null }> } };
 

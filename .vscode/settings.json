@@ -1,0 +1,9 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "javascript.preferences.autoImportSpecifierExcludeRegexes": [
+    "@package"
+  ],
+  "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+    "@package"
+  ]
+}
