@@ -1,7 +1,7 @@
 {
   "name": "autodroid",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "SDK client for Autodroid API",
   "license": "MIT",
   "author": "Luiz Felipe Laviola <luiz@laviola.dev>",

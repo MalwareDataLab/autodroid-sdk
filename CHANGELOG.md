@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.3.0
+
+### Minor Changes
+
+- eb2338c: add processing estimated finish time field
+
 ## 0.2.0
 
 ### Minor Changes
