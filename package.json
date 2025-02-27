@@ -91,6 +91,9 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.7"
   },
+  "publishConfig": {
+    "provenance": true
+  },
   "lint-staged": {
     "**/*.{ts,tsx}": [
       "eslint 'src/**/*.{ts,tsx}' --fix"

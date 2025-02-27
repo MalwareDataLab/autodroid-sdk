@@ -185,6 +185,7 @@ type Processing {
   created_at: DateTimeISO!
   dataset: Dataset!
   dataset_id: String!
+  estimated_finish: ProcessingFinishTimeEstimation
   finished_at: DateTimeISO
   id: ID!
   keep_until: DateTimeISO
@@ -329,6 +330,7 @@ type Query {
   adminDatasets(after: ConnectionCursor, before: ConnectionCursor, file_id: String, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String, visibility: DATASET_VISIBILITY): DatasetPaginationConnection!
   adminProcesses(after: ConnectionCursor, before: ConnectionCursor, created_at_end_date: DateTimeISO, created_at_start_date: DateTimeISO, dataset_id: String, finished: Boolean, first: Int, include_archived: Boolean, keep_until_end_date: DateTimeISO, keep_until_start_date: DateTimeISO, last: Int, metrics_file_id: String, processor_id: String, result_file_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, user_id: String, visibility: PROCESSING_VISIBILITY, worker_id: String): ProcessingPaginationConnection!
   adminProcessing(processing_id: String!): Processing!
+  adminProcessingTimeEstimation(dataset_id: String, processor_id: String): [ProcessingTimeEstimation!]!
   adminProcessor(processor_id: String!): Processor!
   adminProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
   adminWorker(worker_id: String!): Worker!
