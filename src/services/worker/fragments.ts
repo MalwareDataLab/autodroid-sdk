@@ -6,6 +6,7 @@ export const WORKER_REGISTRATION_TOKEN_FRAGMENT = gql(`
     created_at
     expires_at
     id
+    seq
     is_unlimited_usage
     token
     updated_at
@@ -19,6 +20,7 @@ export const WORKER_FRAGMENT = gql(`
     archived_at
     created_at
     id
+    seq
     internal_id
     payload
     refresh_token

@@ -3,6 +3,7 @@ import { gql } from '@api/gql';
 export const PROCESSOR_FRAGMENT = gql(`
   fragment ProcessorFragment on Processor {
     id
+    seq
     name
     version
     image_tag

@@ -3,6 +3,7 @@ import { gql } from '@api/gql';
 export const DATASET_FRAGMENT = gql(`
   fragment DatasetFragment on Dataset {
     id
+    seq
     description
     tags
     visibility

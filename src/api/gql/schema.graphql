@@ -21,6 +21,11 @@ input AdminWorkerUpdateSchema {
   tags: String
 }
 
+"""
+The `BigInt` scalar type represents non-fractional signed whole numeric values.
+"""
+scalar BigInt
+
 """Cursor for pagination"""
 scalar ConnectionCursor
 
@@ -37,6 +42,7 @@ type Dataset {
   file_id: String!
   id: ID!
   processes(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  seq: BigInt!
   tags: String
   updated_at: DateTimeISO!
   user: User!
@@ -85,6 +91,7 @@ type File {
   provider_verified_at: DateTimeISO
   public_url: String
   public_url_expires_at: DateTimeISO
+  seq: BigInt!
   size: Int!
   storage_provider: STORAGE_PROVIDER!
   type: FILE_TYPE!
@@ -197,6 +204,7 @@ type Processing {
   processor_id: String!
   result_file: File
   result_file_id: String
+  seq: BigInt!
   started_at: DateTimeISO
   status: PROCESSING_STATUS!
   updated_at: DateTimeISO!
@@ -257,6 +265,7 @@ type Processor {
   name: String!
   payload: JSON!
   processes(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  seq: BigInt!
   tags: String
   updated_at: DateTimeISO!
   version: String!
@@ -400,7 +409,9 @@ type User {
   language: String
   learning_data: JSON!
   name: String
+  notifications_enabled: Boolean
   phone_number: String
+  seq: BigInt!
   updated_at: DateTimeISO!
 }
 
@@ -411,6 +422,7 @@ type UserAuthProviderConn {
   disconnected_at: DateTimeISO
   id: ID!
   payload: JSON!
+  seq: BigInt!
   updated_at: DateTimeISO!
   user_id: String!
 }
@@ -442,6 +454,7 @@ type UserSession {
 input UserUpdateDataSchema {
   language: String
   name: String!
+  notifications_enabled: Boolean
   phone_number: String
 }
 
@@ -459,6 +472,7 @@ type Worker {
   refresh_token_expires_at: DateTimeISO!
   registration_token: WorkerRegistrationToken!
   registration_token_id: String!
+  seq: BigInt!
   signature: String!
   system_info: JSON!
   tags: String
@@ -490,6 +504,7 @@ type WorkerRegistrationToken {
   expires_at: DateTimeISO
   id: ID!
   is_unlimited_usage: Boolean!
+  seq: BigInt!
   token: String!
   updated_at: DateTimeISO!
   user_id: String!

@@ -3,6 +3,7 @@ import { gql } from '@api/gql';
 export const USER_FRAGMENT = gql(`
   fragment UserFragment on User {
     id
+    seq
     email
     name
     phone_number
@@ -17,6 +18,7 @@ export const USER_FRAGMENT = gql(`
 export const USER_AUTH_PROVIDER_CONN_FRAGMENT = gql(`
   fragment UserAuthProviderConnFragment on UserAuthProviderConn {
     id
+    seq
     auth_provider
     code
     disconnected_at

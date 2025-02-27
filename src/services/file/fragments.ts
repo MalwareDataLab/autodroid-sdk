@@ -3,6 +3,7 @@ import { gql } from '@api/gql';
 export const FILE_FRAGMENT = gql(`
   fragment FileFragment on File {
     id
+    seq
     storage_provider
     provider_path
     provider_status
