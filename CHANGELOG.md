@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.4.0
+
+### Minor Changes
+
+- d9f9883: add seq and user notifications enabled flag
+
 ## 0.3.0
 
 ### Minor Changes
