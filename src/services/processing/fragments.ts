@@ -38,6 +38,14 @@ export const PROCESSING_FRAGMENT = gql(`
       ...FileFragment
     }
 
+    estimated_finish {
+      dataset_id
+      estimated_finish_time
+      estimated_start_time
+      processing_id
+      processor_id
+    }
+
     worker_id
     user_id
   }
