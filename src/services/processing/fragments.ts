@@ -3,6 +3,7 @@ import { gql } from '@api/gql';
 export const PROCESSING_FRAGMENT = gql(`
   fragment ProcessingFragment on Processing {
     id
+    seq
     status
     visibility
     started_at
