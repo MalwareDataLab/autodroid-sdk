@@ -12,6 +12,7 @@ export const USER_FRAGMENT = gql(`
     created_at
     updated_at
     is_admin
+    notifications_enabled
   }
 `);
 
