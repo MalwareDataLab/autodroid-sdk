@@ -1,5 +1,11 @@
 # autodroid
 
+## 0.4.1
+
+### Patch Changes
+
+- c3cd6bf: add notifications enabled field for user
+
 ## 0.4.0
 
 ### Minor Changes
