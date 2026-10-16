@@ -27,8 +27,7 @@ jobs:
       - name: Checkout autodroid-api-gateway (for schema freshness check)
         uses: actions/checkout@v3
         with:
-          repository: MalwareDataLab/autodroid-api-gateway
-          token: ${{ secrets.CROSS_REPO_CHECKOUT_TOKEN }}
+          repository: MalwareDataLab/autodroid-api
           path: autodroid-api-gateway
 
       - name: Setup Node.js 20
