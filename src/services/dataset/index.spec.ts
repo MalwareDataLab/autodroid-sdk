@@ -1,4 +1,7 @@
-import { Dataset } from '@services/dataset';
+// Util import
+import { describePassthrough } from '../../../test/support/passthrough';
+
+// Service import
 import {
   USER_DATASET_CREATE_MUTATION,
   USER_DATASET_DELETE_MUTATION,
@@ -8,7 +11,8 @@ import {
   USER_DATASET_UPDATE_MUTATION,
 } from '@services/dataset/queries';
 
-import { describePassthrough } from '../../../test/support/passthrough';
+// Target import
+import { Dataset } from '@services/dataset';
 
 describePassthrough('Dataset service', context => new Dataset(context), [
   {

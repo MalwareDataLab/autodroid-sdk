@@ -25,6 +25,9 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.cjs",
+  "bin": {
+    "autodroid": "./dist/cli/bin.cjs"
+  },
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
@@ -36,30 +39,36 @@
     "dist"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsup",
     "watch": "tsup --watch",
     "start": "./scripts/run.sh",
+    "pretest": "npm run build",
     "test": "vitest -c ./test/vitest.config.ts run",
+    "pretest:coverage": "npm run build",
     "test:coverage": "vitest -c ./test/vitest.config.ts run --coverage",
     "lint": "run-p -c lint:*",
-    "lint:eslint": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "lint:eslint": "eslint . --ext .ts,.tsx --fix",
     "lint:tsc": "tsc --noEmit",
     "lint:schema": "node scripts/checkSchemaFreshness.mjs",
     "codegen": "graphql-codegen",
     "codegen:update": "graphql-codegen && yalc publish",
     "codegen:watch": "graphql-codegen -w",
-    "schema:check": "node scripts/checkSchemaFreshness.mjs",
     "release": "npm run build && changeset publish",
-    "prepare": "husky"
+    "prepare": "husky",
+    "contract": "tsx scripts/writeToolContract.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",
+    "@clack/prompts": "^0.11.0",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "apollo-link-scalars": "^4.0.3",
     "graphql": "^16.10.0",
-    "graphql-scalars": "^1.24.1"
+    "graphql-scalars": "^1.24.1",
+    "yargs": "^17.7.2",
+    "zod": "^4"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
@@ -74,6 +83,7 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@parcel/watcher": "^2.5.1",
     "@types/node": "^22.13.5",
+    "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
     "@vitest/coverage-v8": "3.0.7",
@@ -91,6 +101,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.5.2",
     "tsup": "^8.4.0",
+    "tsx": "^4.23.15",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.7"
@@ -100,7 +111,7 @@
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [
-      "eslint 'src/**/*.{ts,tsx}' --fix"
+      "eslint --fix"
     ]
   },
   "config": {

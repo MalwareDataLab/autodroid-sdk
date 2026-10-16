@@ -1,4 +1,7 @@
-import { AdminProcessor } from '@services/admin/processor';
+// Util import
+import { describePassthrough } from '../../../../test/support/passthrough';
+
+// Service import
 import {
   ADMIN_PROCESSOR_CREATE_MUTATION,
   ADMIN_PROCESSOR_DELETE_MUTATION,
@@ -7,7 +10,8 @@ import {
   ADMIN_PROCESSOR_UPDATE_MUTATION,
 } from '@services/admin/processor/queries';
 
-import { describePassthrough } from '../../../../test/support/passthrough';
+// Target import
+import { AdminProcessor } from '@services/admin/processor';
 
 describePassthrough(
   'AdminProcessor service',

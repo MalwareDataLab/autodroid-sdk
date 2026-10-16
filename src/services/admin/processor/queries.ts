@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const ADMIN_PROCESSOR_GET_ONE_QUERY = gql(`

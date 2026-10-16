@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const ADMIN_PROCESSING_GET_ONE_QUERY = gql(`
@@ -24,6 +25,12 @@ export const ADMIN_PROCESSING_GET_MANY_QUERY = gql(`
     $status: PROCESSING_STATUS,
     $visibility: PROCESSING_VISIBILITY,
 
+    $createdAtStartDate: DateTimeISO,
+    $createdAtEndDate: DateTimeISO,
+    $keepUntilStartDate: DateTimeISO,
+    $keepUntilEndDate: DateTimeISO,
+    $includeArchived: Boolean,
+
     $skip: Int,
     $take: Int,
 
@@ -49,6 +56,12 @@ export const ADMIN_PROCESSING_GET_MANY_QUERY = gql(`
 
       status: $status,
       visibility: $visibility,
+
+      created_at_start_date: $createdAtStartDate,
+      created_at_end_date: $createdAtEndDate,
+      keep_until_start_date: $keepUntilStartDate,
+      keep_until_end_date: $keepUntilEndDate,
+      include_archived: $includeArchived,
 
       skip: $skip,
       take: $take,
@@ -97,5 +110,29 @@ export const ADMIN_PROCESSING_UPDATE_MUTATION = gql(`
 export const ADMIN_PROCESSING_CLEAN_EXPIRED_MUTATION = gql(`
   mutation AdminProcessingCleanExpired {
     adminProcessingCleanExpired
+  }
+`);
+
+export const ADMIN_PROCESSING_TIME_ESTIMATION_QUERY = gql(`
+  query AdminProcessingTimeEstimation($datasetId: String, $processorId: String) {
+    adminProcessingTimeEstimation(
+      dataset_id: $datasetId
+      processor_id: $processorId
+    ) {
+      dataset_id
+      processor_id
+      estimated_waiting_time
+      estimated_execution_time
+      estimated_total_time
+    }
+  }
+`);
+
+export const ADMIN_PROCESSING_FAIL_DANGLING_MUTATION = gql(`
+  mutation AdminProcessingFailDangling($createdAtEndDate: DateTimeISO, $status: PROCESSING_STATUS) {
+    adminProcessingFailDangling(
+      created_at_end_date: $createdAtEndDate
+      status: $status
+    )
   }
 `);

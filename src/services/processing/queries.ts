@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const USER_PROCESSING_GET_ONE_QUERY = gql(`

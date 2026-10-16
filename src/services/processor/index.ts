@@ -1,6 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
+
+// Type import
 import type { Res } from '@utils/response.type';
 
+// GraphQL import
 import type {
   UserProcessorQueryVariables,
   UserProcessorQuery,
@@ -8,6 +12,7 @@ import type {
   UserProcessorsQuery,
 } from '@gql/graphql';
 
+// Service import
 import {
   USER_PROCESSOR_GET_ONE_QUERY,
   USER_PROCESSOR_GET_MANY_QUERY,

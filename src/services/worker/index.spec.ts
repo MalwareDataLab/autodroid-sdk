@@ -1,4 +1,7 @@
-import { Worker } from '@services/worker';
+// Util import
+import { describePassthrough } from '../../../test/support/passthrough';
+
+// Service import
 import {
   WORKER_PROCESSING_CAPTURE_METRICS_FILE_UPLOAD_MUTATION,
   WORKER_PROCESSING_CAPTURE_RESULT_FILE_UPLOAD_MUTATION,
@@ -14,7 +17,8 @@ import {
   WORKER_UPDATE_REFRESH_TOKEN_MUTATION,
 } from '@services/worker/queries';
 
-import { describePassthrough } from '../../../test/support/passthrough';
+// Target import
+import { Worker } from '@services/worker';
 
 describePassthrough('Worker service', context => new Worker(context), [
   {

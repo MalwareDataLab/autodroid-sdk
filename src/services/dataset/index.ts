@@ -1,6 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
+
+// Type import
 import type { Res } from '@utils/response.type';
 
+// GraphQL import
 import type {
   UserDatasetQueryVariables,
   UserDatasetQuery,
@@ -16,6 +20,7 @@ import type {
   UserDatasetRequestPublicationMutation,
 } from '@gql/graphql';
 
+// Service import
 import {
   USER_DATASET_GET_ONE_QUERY,
   USER_DATASET_GET_MANY_QUERY,

@@ -21,6 +21,7 @@
 
     "import/no-unresolved": "error",
     "import/prefer-default-export": "off",
+    "import/order": "off",
 
     "no-useless-constructor": "off",
     "class-methods-use-this": "off",
@@ -53,11 +54,19 @@
 
     "import/extensions": ["error", "ignorePackages", { "ts": "never" }],
 
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js", "**/*.spec.js", "**/*.test.ts", "**/*.spec.ts"]}]
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js", "**/*.spec.js", "**/*.test.ts", "**/*.spec.ts", "test/**", "scripts/**", "*.config.ts", "codegen.ts"]}]
   },
   "settings": {
     "import/resolver": {
       "typescript": {}
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/cli/**/*.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
 }

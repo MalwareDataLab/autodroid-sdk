@@ -1,4 +1,7 @@
-import { AdminWorker } from '@services/admin/worker';
+// Util import
+import { describePassthrough } from '../../../../test/support/passthrough';
+
+// Service import
 import {
   ADMIN_WORKER_CLEAN_MISSING_MUTATION,
   ADMIN_WORKER_DELETE_MUTATION,
@@ -11,7 +14,8 @@ import {
   ADMIN_WORKER_UPDATE_MUTATION,
 } from '@services/admin/worker/queries';
 
-import { describePassthrough } from '../../../../test/support/passthrough';
+// Target import
+import { AdminWorker } from '@services/admin/worker';
 
 describePassthrough(
   'AdminWorker service',

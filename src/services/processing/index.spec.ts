@@ -1,4 +1,7 @@
-import { Processing } from '@services/processing';
+// Util import
+import { describePassthrough } from '../../../test/support/passthrough';
+
+// Service import
 import {
   USER_PROCESSING_DELETE_MUTATION,
   USER_PROCESSING_EXECUTION_TIME_ESTIMATION_QUERY,
@@ -10,7 +13,8 @@ import {
   USER_PROCESSING_UPDATE_VISIBILITY_MUTATION,
 } from '@services/processing/queries';
 
-import { describePassthrough } from '../../../test/support/passthrough';
+// Target import
+import { Processing } from '@services/processing';
 
 describePassthrough('Processing service', context => new Processing(context), [
   {

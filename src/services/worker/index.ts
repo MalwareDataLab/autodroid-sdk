@@ -1,6 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
+
+// Type import
 import type { Res } from '@utils/response.type';
 
+// GraphQL import
 import {
   WorkerProcessingCaptureMetricsFileUploadMutation,
   WorkerProcessingCaptureMetricsFileUploadMutationVariables,
@@ -28,6 +32,7 @@ import {
   WorkerUpdateRefreshTokenMutationVariables,
 } from '@gql/graphql';
 
+// Service import
 import {
   WORKER_PROCESSING_CAPTURE_METRICS_FILE_UPLOAD_MUTATION,
   WORKER_PROCESSING_CAPTURE_RESULT_FILE_UPLOAD_MUTATION,

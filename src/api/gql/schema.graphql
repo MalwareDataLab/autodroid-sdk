@@ -3,21 +3,31 @@ enum AUTH_PROVIDER {
 }
 
 input AdminDatasetUpdateSchema {
+  """The new description; null or an omitted one is cleared."""
   description: String
+
+  """The new comma-separated tags; null or omitted tags are cleared."""
   tags: String
 }
 
 input AdminDatasetUpdateVisibilitySchema {
+  """The new visibility."""
   visibility: DATASET_VISIBILITY!
 }
 
 input AdminProcessingUpdateSchema {
+  """The new keep-until moment, from now up to 30 days ahead."""
   keep_until: DateTimeISO!
+
+  """The new visibility."""
   visibility: PROCESSING_VISIBILITY
 }
 
 input AdminWorkerUpdateSchema {
+  """The new description; null clears it."""
   description: String
+
+  """The new comma-separated tags; null clears them."""
   tags: String
 }
 
@@ -41,11 +51,45 @@ type Dataset {
   file: File!
   file_id: String!
   id: ID!
-  processes(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  processes(
+    after: ConnectionCursor
+    before: ConnectionCursor
+
+    """Only runs of this dataset."""
+    dataset_id: String
+
+    """Only runs that already finished."""
+    finished: Boolean
+    first: Int
+    last: Int
+
+    """Only runs of this processor."""
+    processor_id: String
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """Only runs that already started."""
+    started: Boolean
+
+    """Only runs in this status."""
+    status: PROCESSING_STATUS
+
+    """How many items to return."""
+    take: Int
+
+    """Only runs with this visibility."""
+    visibility: PROCESSING_VISIBILITY
+  ): ProcessingPaginationConnection!
   seq: BigInt!
   tags: String
   updated_at: DateTimeISO!
-  user: User!
+  user: User
   user_id: String!
   visibility: DATASET_VISIBILITY!
 }
@@ -114,34 +158,158 @@ enum MIME_TYPE {
   ZIP
 }
 
+type McpAuthorizationGrant {
+  client_id: String!
+  client_name: String
+
+  """
+  Host that published this client's metadata document, which authenticates it; null for a dynamically registered client, whose name is self-declared and unverified.
+  """
+  client_verified_host: String
+  created_at: DateTimeISO!
+  expires_at: DateTimeISO!
+  id: ID!
+  last_used_at: DateTimeISO
+  resource: String!
+  revoked_at: DateTimeISO
+  scopes: [String!]!
+  seq: BigInt!
+  updated_at: DateTimeISO!
+  user_id: String!
+}
+
 type Mutation {
-  adminDatasetDelete(dataset_id: String!): Dataset!
-  adminDatasetUpdate(data: AdminDatasetUpdateSchema!, dataset_id: String!): Dataset!
-  adminDatasetUpdateVisibility(data: AdminDatasetUpdateVisibilitySchema!, dataset_id: String!): Dataset!
+  adminDatasetDelete(
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  adminDatasetUpdate(
+    """The new description and tags."""
+    data: AdminDatasetUpdateSchema!
+
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  adminDatasetUpdateVisibility(
+    """The new visibility."""
+    data: AdminDatasetUpdateVisibilitySchema!
+
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
   adminFileRemoveAllDangling: Int!
   adminProcessingCleanExpired: Int!
-  adminProcessingDelete(processing_id: String!): Processing!
-  adminProcessingFailDangling(created_at_end_date: DateTimeISO, status: PROCESSING_STATUS): Int!
-  adminProcessingUpdate(data: AdminProcessingUpdateSchema!, processing_id: String!): Processing!
-  adminProcessorCreate(data: ProcessorSchema!): Processor!
-  adminProcessorDelete(processor_id: String!): Processor!
-  adminProcessorUpdate(data: ProcessorSchema!, processor_id: String!): Processor!
+  adminProcessingDelete(
+    """The processing run id."""
+    processing_id: String!
+  ): Processing!
+  adminProcessingFailDangling(
+    """
+    Only runs created before this moment, in the past. Defaults to one day ago.
+    """
+    created_at_end_date: DateTimeISO
+
+    """Only runs in this status, PENDING or RUNNING. Defaults to PENDING."""
+    status: PROCESSING_STATUS
+  ): Int!
+  adminProcessingUpdate(
+    """The new keep-until moment and visibility."""
+    data: AdminProcessingUpdateSchema!
+
+    """The processing run id."""
+    processing_id: String!
+  ): Processing!
+  adminProcessorCreate(
+    """The processor's whole definition."""
+    data: ProcessorSchema!
+  ): Processor!
+  adminProcessorDelete(
+    """The processor id."""
+    processor_id: String!
+  ): Processor!
+  adminProcessorUpdate(
+    """The processor's whole definition."""
+    data: ProcessorSchema!
+
+    """The processor id."""
+    processor_id: String!
+  ): Processor!
   adminWorkerCleanMissing: Int!
-  adminWorkerDelete(worker_id: String!): Worker!
-  adminWorkerRegistrationTokenCreate(data: WorkerRegistrationTokenCreateSchema!): WorkerRegistrationToken!
-  adminWorkerRegistrationTokenDelete(worker_registration_token_id: String!): WorkerRegistrationToken!
-  adminWorkerUpdate(data: AdminWorkerUpdateSchema!, worker_id: String!): Worker!
-  userDatasetCreate(data: UserDatasetCreateSchema!): Dataset!
-  userDatasetDelete(dataset_id: String!): Dataset!
-  userDatasetRequestPublication(dataset_id: String!): Dataset!
-  userDatasetUpdate(data: UserDatasetUpdateSchema!, dataset_id: String!): Dataset!
-  userProcessingDelete(processing_id: String!): Processing!
-  userProcessingExtendKeepUntil(keep_until: DateTimeISO!, processing_id: String!): Processing!
-  userProcessingUpdateVisibility(processing_id: String!, visibility: PROCESSING_VISIBILITY!): Processing!
-  userRequestDatasetProcessing(data: RequestDatasetProcessingSchema!): Processing!
+  adminWorkerDelete(
+    """The worker id."""
+    worker_id: String!
+  ): Worker!
+  adminWorkerRegistrationTokenCreate(
+    """The new token's usage and expiry."""
+    data: WorkerRegistrationTokenCreateSchema!
+  ): WorkerRegistrationToken!
+  adminWorkerRegistrationTokenDelete(
+    """The registration token id."""
+    worker_registration_token_id: String!
+  ): WorkerRegistrationToken!
+  adminWorkerUpdate(
+    """The new description and tags."""
+    data: AdminWorkerUpdateSchema!
+
+    """The worker id."""
+    worker_id: String!
+  ): Worker!
+  userDatasetCreate(
+    """The dataset to register, described by its file."""
+    data: UserDatasetCreateSchema!
+  ): Dataset!
+  userDatasetDelete(
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  userDatasetRequestPublication(
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  userDatasetUpdate(
+    """The new description and tags."""
+    data: UserDatasetUpdateSchema!
+
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  userMcpAuthorizationGrantRevoke(
+    """The connection id."""
+    mcp_authorization_grant_id: String!
+  ): McpAuthorizationGrant!
+  userProcessingDelete(
+    """The processing run id."""
+    processing_id: String!
+  ): Processing!
+  userProcessingExtendKeepUntil(
+    """
+    The new keep-until moment, from now up to 30 days ahead (e.g. 2030-01-31T00:00:00Z).
+    """
+    keep_until: DateTimeISO!
+
+    """The processing run id."""
+    processing_id: String!
+  ): Processing!
+  userProcessingUpdateVisibility(
+    """The processing run id."""
+    processing_id: String!
+
+    """The new visibility."""
+    visibility: PROCESSING_VISIBILITY!
+  ): Processing!
+  userRequestDatasetProcessing(
+    """The dataset, the processor and the parameters of the run."""
+    data: RequestDatasetProcessingSchema!
+  ): Processing!
   userSessionsClose: UserAuthProviderConn!
-  userUpdateData(data: UserUpdateDataSchema!): User!
-  userUpdateLearningData(data: JSON!): User!
+  userUpdateData(
+    """Your profile fields."""
+    data: UserUpdateDataSchema!
+  ): User!
+  userUpdateLearningData(
+    """The learning data object (JSON)."""
+    data: JSON!
+  ): User!
   workerProcessingCaptureMetricsFileUpload(processing_id: String!): File!
   workerProcessingCaptureResultFileUpload(processing_id: String!): File!
   workerProcessingGenerateMetricsFileUpload(data: RequestFileUploadSignedUrlSchema!, processing_id: String!): File!
@@ -209,7 +377,7 @@ type Processing {
   started_at: DateTimeISO
   status: PROCESSING_STATUS!
   updated_at: DateTimeISO!
-  user: User!
+  user: User
   user_id: String!
   verified_at: DateTimeISO
   visibility: PROCESSING_VISIBILITY!
@@ -265,7 +433,41 @@ type Processor {
   image_tag: String!
   name: String!
   payload: JSON!
-  processes(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
+  processes(
+    after: ConnectionCursor
+    before: ConnectionCursor
+
+    """Only runs of this dataset."""
+    dataset_id: String
+
+    """Only runs that already finished."""
+    finished: Boolean
+    first: Int
+    last: Int
+
+    """Only runs of this processor."""
+    processor_id: String
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """Only runs that already started."""
+    started: Boolean
+
+    """Only runs in this status."""
+    status: PROCESSING_STATUS
+
+    """How many items to return."""
+    take: Int
+
+    """Only runs with this visibility."""
+    visibility: PROCESSING_VISIBILITY
+  ): ProcessingPaginationConnection!
   seq: BigInt!
   tags: String
   updated_at: DateTimeISO!
@@ -285,22 +487,50 @@ type ProcessorConfiguration {
 }
 
 input ProcessorConfigurationParameterSchema {
+  """
+  Value used when a run leaves the parameter out; null when there is none.
+  """
   default_value: String
+
+  """What the parameter does."""
   description: String!
+
+  """Whether a run must give the parameter."""
   is_required: Boolean!
+
+  """Parameter name."""
   name: String!
+
+  """Position of the parameter in the command line."""
   sequence: Int!
+
+  """Type of the parameter's value."""
   type: PROCESSOR_PARAMETER_TYPE!
 }
 
 input ProcessorConfigurationSchema {
+  """Command run inside the container."""
   command: String!
+
+  """Argument name that receives the input dataset path."""
   dataset_input_argument: String!
+
+  """Input dataset path value."""
   dataset_input_value: String!
+
+  """Argument name that receives the output directory."""
   dataset_output_argument: String!
+
+  """Output directory value."""
   dataset_output_value: String!
+
+  """Glob patterns of the metrics files it produces."""
   output_metrics_file_glob_patterns: [String!]!
+
+  """Glob patterns of the result files it produces."""
   output_result_file_glob_patterns: [String!]!
+
+  """The parameters a run of it accepts."""
   parameters: [ProcessorConfigurationParameterSchema!]!
 }
 
@@ -325,60 +555,366 @@ type ProcessorParameter {
 }
 
 input ProcessorSchema {
+  """Comma-separated MIME types of the datasets it accepts."""
   allowed_mime_types: String!
+
+  """How the processor runs."""
   configuration: ProcessorConfigurationSchema!
+
+  """What the processor does; null when there is none."""
   description: String
+
+  """Container image tag to run."""
   image_tag: String!
+
+  """Processor name."""
   name: String!
+
+  """Comma-separated tags; null when there are none."""
   tags: String
+
+  """Semantic version, e.g. 1.2.0."""
   version: String!
+
+  """Who can use it."""
   visibility: PROCESSOR_VISIBILITY!
 }
 
 type Query {
-  adminDataset(dataset_id: String!): Dataset!
-  adminDatasets(after: ConnectionCursor, before: ConnectionCursor, file_id: String, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String, visibility: DATASET_VISIBILITY): DatasetPaginationConnection!
-  adminProcesses(after: ConnectionCursor, before: ConnectionCursor, created_at_end_date: DateTimeISO, created_at_start_date: DateTimeISO, dataset_id: String, finished: Boolean, first: Int, include_archived: Boolean, keep_until_end_date: DateTimeISO, keep_until_start_date: DateTimeISO, last: Int, metrics_file_id: String, processor_id: String, result_file_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, user_id: String, visibility: PROCESSING_VISIBILITY, worker_id: String): ProcessingPaginationConnection!
-  adminProcessing(processing_id: String!): Processing!
-  adminProcessingTimeEstimation(dataset_id: String, processor_id: String): [ProcessingTimeEstimation!]!
-  adminProcessor(processor_id: String!): Processor!
-  adminProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
-  adminWorker(worker_id: String!): Worker!
-  adminWorkerRegistrationToken(worker_registration_token_id: String!): WorkerRegistrationToken!
-  adminWorkerRegistrationTokens(activatable: Boolean, activated: Boolean, after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, expired: Boolean, first: Int, is_unlimited_usage: Boolean, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int, token: String, user_id: String): WorkerRegistrationTokenPaginationConnection!
-  adminWorkers(after: ConnectionCursor, archived: Boolean, before: ConnectionCursor, first: Int, last: Int, missing: Boolean, registration_token_id: String, skip: Int, sorting: [SortingFieldSchema!], take: Int, user_id: String): WorkerPaginationConnection!
+  adminDataset(
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  adminDatasets(
+    after: ConnectionCursor
+    before: ConnectionCursor
+
+    """Only the dataset of this file."""
+    file_id: String
+    first: Int
+    last: Int
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """How many items to return."""
+    take: Int
+
+    """Only datasets of this user."""
+    user_id: String
+
+    """Only datasets with this visibility."""
+    visibility: DATASET_VISIBILITY
+  ): DatasetPaginationConnection!
+  adminProcesses(
+    after: ConnectionCursor
+    before: ConnectionCursor
+
+    """Only runs created at or before this moment."""
+    created_at_end_date: DateTimeISO
+
+    """Only runs created at or after this moment."""
+    created_at_start_date: DateTimeISO
+
+    """Only runs of this dataset."""
+    dataset_id: String
+
+    """Only runs that already finished."""
+    finished: Boolean
+    first: Int
+
+    """Also list deleted (archived) runs."""
+    include_archived: Boolean
+
+    """Only runs kept until at most this moment."""
+    keep_until_end_date: DateTimeISO
+
+    """Only runs kept until at least this moment."""
+    keep_until_start_date: DateTimeISO
+    last: Int
+
+    """Only the run with this metrics file."""
+    metrics_file_id: String
+
+    """Only runs of this processor."""
+    processor_id: String
+
+    """Only the run with this result file."""
+    result_file_id: String
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """Only runs that already started."""
+    started: Boolean
+
+    """Only runs in this status."""
+    status: PROCESSING_STATUS
+
+    """How many items to return."""
+    take: Int
+
+    """Only runs of this user."""
+    user_id: String
+
+    """Only runs with this visibility."""
+    visibility: PROCESSING_VISIBILITY
+
+    """Only runs of this worker."""
+    worker_id: String
+  ): ProcessingPaginationConnection!
+  adminProcessing(
+    """The processing run id."""
+    processing_id: String!
+  ): Processing!
+  adminProcessingTimeEstimation(
+    """Limit to this dataset."""
+    dataset_id: String
+
+    """Limit to this processor."""
+    processor_id: String
+  ): [ProcessingTimeEstimation!]!
+  adminProcessor(
+    """The processor id."""
+    processor_id: String!
+  ): Processor!
+  adminProcessors(
+    after: ConnectionCursor
+    before: ConnectionCursor
+    first: Int
+    last: Int
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """How many items to return."""
+    take: Int
+  ): ProcessorPaginationConnection!
+  adminWorker(
+    """The worker id."""
+    worker_id: String!
+  ): Worker!
+  adminWorkerRegistrationToken(
+    """The registration token id."""
+    worker_registration_token_id: String!
+  ): WorkerRegistrationToken!
+  adminWorkerRegistrationTokens(
+    """Only tokens still usable."""
+    activatable: Boolean
+
+    """Only tokens already used."""
+    activated: Boolean
+    after: ConnectionCursor
+
+    """Only archived tokens."""
+    archived: Boolean
+    before: ConnectionCursor
+
+    """Only expired tokens."""
+    expired: Boolean
+    first: Int
+
+    """Only tokens with unlimited usage."""
+    is_unlimited_usage: Boolean
+    last: Int
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """How many items to return."""
+    take: Int
+
+    """Only the token with this exact value."""
+    token: String
+
+    """Only tokens of this user."""
+    user_id: String
+  ): WorkerRegistrationTokenPaginationConnection!
+  adminWorkers(
+    after: ConnectionCursor
+
+    """Only archived workers."""
+    archived: Boolean
+    before: ConnectionCursor
+    first: Int
+    last: Int
+
+    """Only workers marked missing."""
+    missing: Boolean
+
+    """Only workers registered with this token."""
+    registration_token_id: String
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """How many items to return."""
+    take: Int
+
+    """Only workers of this user."""
+    user_id: String
+  ): WorkerPaginationConnection!
   healthCheck: DateTimeISO!
   healthLivenessCheck: DateTimeISO!
   healthReadinessCheck: DateTimeISO!
   session: Session!
   user: User!
-  userDataset(dataset_id: String!): Dataset!
-  userDatasets(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): DatasetPaginationConnection!
-  userProcesses(after: ConnectionCursor, before: ConnectionCursor, dataset_id: String, finished: Boolean, first: Int, last: Int, processor_id: String, skip: Int, sorting: [SortingFieldSchema!], started: Boolean, status: PROCESSING_STATUS, take: Int, visibility: PROCESSING_VISIBILITY): ProcessingPaginationConnection!
-  userProcessing(processing_id: String!): Processing!
-  userProcessingEstimatedFinish(processing_id: String!): ProcessingFinishTimeEstimation!
-  userProcessingTimeEstimation(dataset_id: String!, processor_id: String!): ProcessingTimeEstimation!
-  userProcessor(processor_id: String!): Processor!
-  userProcessors(after: ConnectionCursor, before: ConnectionCursor, first: Int, last: Int, skip: Int, sorting: [SortingFieldSchema!], take: Int): ProcessorPaginationConnection!
+  userDataset(
+    """The dataset id."""
+    dataset_id: String!
+  ): Dataset!
+  userDatasets(
+    after: ConnectionCursor
+    before: ConnectionCursor
+    first: Int
+    last: Int
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """How many items to return."""
+    take: Int
+  ): DatasetPaginationConnection!
+  userMcpAuthorizationGrants: [McpAuthorizationGrant!]!
+  userProcesses(
+    after: ConnectionCursor
+    before: ConnectionCursor
+
+    """Only runs of this dataset."""
+    dataset_id: String
+
+    """Only runs that already finished."""
+    finished: Boolean
+    first: Int
+    last: Int
+
+    """Only runs of this processor."""
+    processor_id: String
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """Only runs that already started."""
+    started: Boolean
+
+    """Only runs in this status."""
+    status: PROCESSING_STATUS
+
+    """How many items to return."""
+    take: Int
+
+    """Only runs with this visibility."""
+    visibility: PROCESSING_VISIBILITY
+  ): ProcessingPaginationConnection!
+  userProcessing(
+    """The processing run id."""
+    processing_id: String!
+  ): Processing!
+  userProcessingEstimatedFinish(
+    """The processing run id."""
+    processing_id: String!
+  ): ProcessingFinishTimeEstimation!
+  userProcessingTimeEstimation(
+    """The dataset id."""
+    dataset_id: String!
+
+    """The processor id."""
+    processor_id: String!
+  ): ProcessingTimeEstimation!
+  userProcessor(
+    """The processor id."""
+    processor_id: String!
+  ): Processor!
+  userProcessors(
+    after: ConnectionCursor
+    before: ConnectionCursor
+    first: Int
+    last: Int
+
+    """How many items to skip, to read past the first page."""
+    skip: Int
+
+    """
+    How to sort, the first entry first, in up to 3 entries over the fields created_at, updated_at, id; newest first when omitted. E.g. [{"field":"created_at","order":"ASC"}].
+    """
+    sorting: [SortingFieldSchema!]
+
+    """How many items to return."""
+    take: Int
+  ): ProcessorPaginationConnection!
   worker: Worker!
   workerProcessing(processing_id: String!): Processing!
 }
 
 input RequestDatasetProcessingParameterSchema {
+  """The parameter name."""
   name: String!
+
+  """The parameter value."""
   value: String!
 }
 
 input RequestDatasetProcessingSchema {
+  """The dataset id."""
   dataset_id: String!
+
+  """
+  Processor parameters as name/value pairs; an empty list when there are none.
+  """
   parameters: [RequestDatasetProcessingParameterSchema!]!
+
+  """The processor id."""
   processor_id: String!
 }
 
 input RequestFileUploadSignedUrlSchema {
+  """The file's name, e.g. samples.csv."""
   filename: String!
+
+  """The file's MD5 hash, as 32 hexadecimal characters."""
   md5_hash: String!
+
+  """
+  The file's type, by its MIME_TYPE name: JPEG (image/jpeg), PNG (image/png), PDF (application/pdf), CSV (text/csv), ZIP (application/zip) or OTHER (application/octet-stream). The upload must send the MIME type it names as its Content-Type.
+  """
   mime_type: MIME_TYPE!
+
+  """The file's size in bytes."""
   size: Int!
 }
 
@@ -398,7 +934,10 @@ type Session {
 }
 
 input SortingFieldSchema {
+  """The field to sort by."""
   field: String!
+
+  """The sort direction."""
   order: SORT_ORDER!
 }
 
@@ -429,16 +968,32 @@ type UserAuthProviderConn {
 }
 
 input UserDatasetCreateSchema {
+  """What the dataset contains."""
   description: String
+
+  """The file's name, e.g. samples.csv."""
   filename: String!
+
+  """The file's MD5 hash, as 32 hexadecimal characters."""
   md5_hash: String!
+
+  """
+  The file's type, by its MIME_TYPE name: JPEG (image/jpeg), PNG (image/png), PDF (application/pdf), CSV (text/csv), ZIP (application/zip) or OTHER (application/octet-stream). The upload must send the MIME type it names as its Content-Type.
+  """
   mime_type: MIME_TYPE!
+
+  """The file's size in bytes."""
   size: Int!
+
+  """Comma-separated tags."""
   tags: String
 }
 
 input UserDatasetUpdateSchema {
+  """The new description; null or an omitted one is cleared."""
   description: String
+
+  """The new comma-separated tags; null or omitted tags are cleared."""
   tags: String
 }
 
@@ -453,9 +1008,16 @@ type UserSession {
 }
 
 input UserUpdateDataSchema {
+  """Preferred language, e.g. "pt-br"."""
   language: String
+
+  """Your name."""
   name: String!
+
+  """Whether to receive notifications."""
   notifications_enabled: Boolean
+
+  """Phone number, e.g. "+55 99 9 9999 9999"; null clears it."""
   phone_number: String
 }
 
@@ -507,13 +1069,16 @@ type WorkerRegistrationToken {
   id: ID!
   is_unlimited_usage: Boolean!
   seq: BigInt!
-  token: String!
+  token: String
   updated_at: DateTimeISO!
   user_id: String!
 }
 
 input WorkerRegistrationTokenCreateSchema {
+  """When the token stops working; it never expires when omitted."""
   expires_at: DateTimeISO
+
+  """Whether the token can register any number of workers."""
   is_unlimited_usage: Boolean!
 }
 

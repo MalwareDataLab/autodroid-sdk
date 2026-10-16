@@ -1,11 +1,15 @@
-import { HealthCheck } from '@services/healthCheck';
+// Util import
+import { describePassthrough } from '../../../test/support/passthrough';
+
+// Service import
 import {
   HEALTH_CHECK_QUERY,
   HEALTH_LIVENESS_CHECK_QUERY,
   HEALTH_READINESS_CHECK_QUERY,
 } from '@services/healthCheck/queries';
 
-import { describePassthrough } from '../../../test/support/passthrough';
+// Target import
+import { HealthCheck } from '@services/healthCheck';
 
 describePassthrough(
   'HealthCheck service',

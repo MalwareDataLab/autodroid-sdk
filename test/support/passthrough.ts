@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-export type PassthroughCase = {
+type PassthroughCase = {
   method: string;
   kind: 'query' | 'mutate';
   document: unknown;

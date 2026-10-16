@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const WORKER_QUERY = gql(`

@@ -1,10 +1,14 @@
-import { Processor } from '@services/processor';
+// Util import
+import { describePassthrough } from '../../../test/support/passthrough';
+
+// Service import
 import {
   USER_PROCESSOR_GET_MANY_QUERY,
   USER_PROCESSOR_GET_ONE_QUERY,
 } from '@services/processor/queries';
 
-import { describePassthrough } from '../../../test/support/passthrough';
+// Target import
+import { Processor } from '@services/processor';
 
 describePassthrough('Processor service', context => new Processor(context), [
   {

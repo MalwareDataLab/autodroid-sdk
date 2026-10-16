@@ -1,7 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
 
+// Type import
 import { Res } from '@utils/response.type';
 
+// GraphQL import
 import {
   AdminDatasetDeleteMutation,
   AdminDatasetDeleteMutationVariables,
@@ -15,6 +18,7 @@ import {
   AdminDatasetUpdateVisibilityMutationVariables,
 } from '@gql/graphql';
 
+// Service import
 import {
   ADMIN_DATASET_DELETE_MUTATION,
   ADMIN_DATASET_GET_ONE_QUERY,

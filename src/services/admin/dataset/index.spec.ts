@@ -1,4 +1,7 @@
-import { AdminDataset } from '@services/admin/dataset';
+// Util import
+import { describePassthrough } from '../../../../test/support/passthrough';
+
+// Service import
 import {
   ADMIN_DATASET_DELETE_MUTATION,
   ADMIN_DATASET_GET_MANY_QUERY,
@@ -7,7 +10,8 @@ import {
   ADMIN_DATASET_UPDATE_VISIBILITY_MUTATION,
 } from '@services/admin/dataset/queries';
 
-import { describePassthrough } from '../../../../test/support/passthrough';
+// Target import
+import { AdminDataset } from '@services/admin/dataset';
 
 describePassthrough(
   'AdminDataset service',

@@ -1,55 +1,53 @@
-import { existsSync, readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import { buildSchema, printSchema } from "graphql";
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { buildSchema, printSchema } from 'graphql';
 
-const SDK_ROOT = path.dirname(
-  path.dirname(fileURLToPath(import.meta.url)),
-);
-const SDK_SCHEMA_PATH = path.join(SDK_ROOT, "src/api/gql/schema.graphql");
-// Local dev: this monorepo's sibling-checkout layout. CI: actions/checkout
-// can't place a second repo outside $GITHUB_WORKSPACE, so the workflow sets
-// BACKEND_SCHEMA_PATH explicitly to wherever it actually checked it out.
+const SDK_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const SDK_SCHEMA_PATH = path.join(SDK_ROOT, 'src/api/gql/schema.graphql');
 const BACKEND_SCHEMA_PATH =
   process.env.BACKEND_SCHEMA_PATH ||
   path.join(
     SDK_ROOT,
-    "../autodroid-api-gateway/packages/api/src/shared/infrastructure/graphql/generated/schema.gql",
+    '../autodroid-api-gateway/packages/api/src/shared/infrastructure/graphql/generated/schema.gql',
   );
 
-// These specific directives are backend-internal annotations never exposed by
-// introspection, so the SDK's introspected schema.graphql never carries them
-// — strip only them before comparing, so the diff still reflects real drift
-// on any client-relevant directive (e.g. @deprecated) that introspection DOES
-// expose and that SHOULD cause a mismatch.
-const BACKEND_ONLY_DIRECTIVES = ["auth", "constraint"];
+const BACKEND_ONLY_DIRECTIVES = ['auth', 'constraint'];
 
-// A regex can't safely find the matching ")" when a directive argument is a
-// quoted string containing its own parens (e.g. @constraint(pattern: "(a|b)"))
-// — scan character-by-character, quote-aware, tracking paren depth instead.
+const isIdentifierChar = char => /[A-Za-z0-9_]/.test(char ?? '');
+
 const stripDirectiveUsages = sdl => {
-  let result = "";
+  let result = '';
   let i = 0;
+  let inString = false;
+
   while (i < sdl.length) {
-    const directiveName = BACKEND_ONLY_DIRECTIVES.find(name =>
-      sdl.startsWith(`@${name}`, i),
-    );
+    const char = sdl[i];
+    if (char === '"' && sdl[i - 1] !== '\\') inString = !inString;
+
+    const directiveName = inString
+      ? undefined
+      : BACKEND_ONLY_DIRECTIVES.find(
+          name =>
+            sdl.startsWith(`@${name}`, i) &&
+            !isIdentifierChar(sdl[i + 1 + name.length]),
+        );
+
     if (!directiveName) {
-      result += sdl[i];
+      result += char;
       i += 1;
       continue;
     }
 
     i += 1 + directiveName.length;
-    if (sdl[i] !== "(") continue;
+    if (sdl[i] !== '(') continue;
 
     let depth = 0;
-    let inString = false;
     while (i < sdl.length) {
-      const char = sdl[i];
-      if (char === '"' && sdl[i - 1] !== "\\") inString = !inString;
-      if (!inString && char === "(") depth += 1;
-      if (!inString && char === ")") {
+      const argChar = sdl[i];
+      if (argChar === '"' && sdl[i - 1] !== '\\') inString = !inString;
+      if (!inString && argChar === '(') depth += 1;
+      if (!inString && argChar === ')') {
         depth -= 1;
         i += 1;
         if (depth === 0) break;
@@ -62,15 +60,10 @@ const stripDirectiveUsages = sdl => {
 };
 
 const normalize = filePath =>
-  printSchema(buildSchema(stripDirectiveUsages(readFileSync(filePath, "utf8"))));
+  printSchema(
+    buildSchema(stripDirectiveUsages(readFileSync(filePath, 'utf8'))),
+  );
 
-// Only meaningful in this monorepo's sibling-checkout layout. Locally, skip
-// cleanly when the backend repo isn't checked out alongside the SDK. In CI,
-// a silent skip means this gate never actually runs — GitHub Actions'
-// default `actions/checkout` only clones this one repo, so exiting 0 here
-// would make `yarn lint` permanently green regardless of real schema drift.
-// Fail loudly instead, forcing CI to either provide the sibling checkout or
-// accept it deliberately doesn't run this check.
 if (!existsSync(BACKEND_SCHEMA_PATH)) {
   const message = `Backend schema not found at ${BACKEND_SCHEMA_PATH} (sibling autodroid-api-gateway checkout not present).`;
   if (process.env.CI) {
@@ -97,4 +90,42 @@ if (sdkSdl !== backendSdl) {
   process.exit(1);
 }
 
-console.log("SDK schema matches the backend schema.");
+console.log('SDK schema matches the backend schema.');
+
+const SDK_CONTRACT_PATH = path.join(
+  SDK_ROOT,
+  'src/cli/operations/toolContract.json',
+);
+const BACKEND_CONTRACT_PATH = path.join(
+  path.dirname(path.dirname(BACKEND_SCHEMA_PATH)),
+  '../../../../test/fixtures/mcpToolContract.json',
+);
+
+const RELEASE_ORDER =
+  'Release order: 1) regenerate the SDK contract (`npm run contract`); ' +
+  "2) copy it over the backend's test/fixtures/mcpToolContract.json and merge " +
+  'that backend change; 3) then merge and release the SDK.';
+
+if (!existsSync(BACKEND_CONTRACT_PATH)) {
+  const message = `MCP tool contract check skipped: not found at ${BACKEND_CONTRACT_PATH}.\n${RELEASE_ORDER}`;
+  if (process.env.CI) {
+    console.error(message);
+    process.exit(1);
+  }
+  console.log(message);
+  process.exit(0);
+}
+
+if (
+  readFileSync(SDK_CONTRACT_PATH, 'utf8') !==
+  readFileSync(BACKEND_CONTRACT_PATH, 'utf8')
+) {
+  console.error(
+    "The backend's copy of the MCP tool contract differs from the SDK's.\n" +
+      `Copy ${SDK_CONTRACT_PATH} over ${BACKEND_CONTRACT_PATH}.\n` +
+      RELEASE_ORDER,
+  );
+  process.exit(1);
+}
+
+console.log("MCP tool contract matches the backend's copy.");

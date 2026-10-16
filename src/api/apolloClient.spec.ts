@@ -1,5 +1,3 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Kind } from 'graphql';
 import {
   ApolloClient,
   ApolloLink,
@@ -7,9 +5,14 @@ import {
   createHttpLink,
   gql,
 } from '@apollo/client/core';
+import { Kind } from 'graphql';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BigIntScalar, createApolloClient } from '@api/apolloClient';
+// Service import
 import { HEALTH_CHECK_QUERY } from '@services/healthCheck/queries';
+
+// Target import
+import { BigIntScalar, createApolloClient } from '@api/apolloClient';
 
 vi.mock('@apollo/client/core', async importOriginal => {
   const actual = await importOriginal<typeof import('@apollo/client/core')>();

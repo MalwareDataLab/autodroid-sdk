@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const DATASET_FRAGMENT = gql(`

@@ -1,29 +1,30 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { AutoDroidSdk } from '@package';
-
+// Service import
 import { Admin } from '@services/admin';
 import { AdminDataset } from '@services/admin/dataset';
-import { AdminProcessor } from '@services/admin/processor';
-import { AdminProcessing } from '@services/admin/processing';
-import { AdminWorker } from '@services/admin/worker';
-import { User } from '@services/user';
-import { Dataset } from '@services/dataset';
-import { Processor } from '@services/processor';
-import { Processing } from '@services/processing';
-import { HealthCheck } from '@services/healthCheck';
-import { Worker } from '@services/worker';
-
-import { USER_QUERY } from '@services/user/queries';
-import { USER_DATASET_GET_ONE_QUERY } from '@services/dataset/queries';
-import { USER_PROCESSOR_GET_ONE_QUERY } from '@services/processor/queries';
-import { USER_PROCESSING_GET_ONE_QUERY } from '@services/processing/queries';
-import { HEALTH_LIVENESS_CHECK_QUERY } from '@services/healthCheck/queries';
-import { WORKER_QUERY } from '@services/worker/queries';
 import { ADMIN_DATASET_GET_ONE_QUERY } from '@services/admin/dataset/queries';
-import { ADMIN_PROCESSOR_GET_ONE_QUERY } from '@services/admin/processor/queries';
+import { AdminProcessing } from '@services/admin/processing';
 import { ADMIN_PROCESSING_GET_ONE_QUERY } from '@services/admin/processing/queries';
+import { AdminProcessor } from '@services/admin/processor';
+import { ADMIN_PROCESSOR_GET_ONE_QUERY } from '@services/admin/processor/queries';
+import { AdminWorker } from '@services/admin/worker';
 import { ADMIN_WORKER_GET_ONE_QUERY } from '@services/admin/worker/queries';
+import { Dataset } from '@services/dataset';
+import { USER_DATASET_GET_ONE_QUERY } from '@services/dataset/queries';
+import { HealthCheck } from '@services/healthCheck';
+import { HEALTH_LIVENESS_CHECK_QUERY } from '@services/healthCheck/queries';
+import { Processing } from '@services/processing';
+import { USER_PROCESSING_GET_ONE_QUERY } from '@services/processing/queries';
+import { Processor } from '@services/processor';
+import { USER_PROCESSOR_GET_ONE_QUERY } from '@services/processor/queries';
+import { User } from '@services/user';
+import { USER_QUERY } from '@services/user/queries';
+import { Worker } from '@services/worker';
+import { WORKER_QUERY } from '@services/worker/queries';
+
+// Target import
+import { AutoDroidSdk } from '@package';
 
 const { createApolloClientMock } = vi.hoisted(() => ({
   createApolloClientMock: vi.fn(),

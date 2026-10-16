@@ -1,7 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
 
+// Type import
 import { Res } from '@utils/response.type';
 
+// GraphQL import
 import {
   AdminProcessorDeleteMutation,
   AdminProcessorDeleteMutationVariables,
@@ -15,6 +18,7 @@ import {
   AdminProcessorCreateMutationVariables,
 } from '@gql/graphql';
 
+// Service import
 import {
   ADMIN_PROCESSOR_DELETE_MUTATION,
   ADMIN_PROCESSOR_GET_ONE_QUERY,

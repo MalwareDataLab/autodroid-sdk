@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const WORKER_REGISTRATION_TOKEN_FRAGMENT = gql(`
@@ -8,9 +9,15 @@ export const WORKER_REGISTRATION_TOKEN_FRAGMENT = gql(`
     id
     seq
     is_unlimited_usage
-    token
     updated_at
     user_id
+  }
+`);
+
+export const WORKER_REGISTRATION_TOKEN_WITH_VALUE_FRAGMENT = gql(`
+  fragment WorkerRegistrationTokenWithValueFragment on WorkerRegistrationToken {
+    ...WorkerRegistrationTokenFragment
+    token
   }
 `);
 

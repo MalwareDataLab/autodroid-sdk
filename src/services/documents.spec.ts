@@ -1,28 +1,40 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import {
+  buildSchema,
+  DocumentNode,
+  FieldNode,
+  FragmentDefinitionNode,
+  Kind,
+  OperationDefinitionNode,
+  visit,
+} from 'graphql';
 import { describe, expect, it } from 'vitest';
-import { DocumentNode, FragmentDefinitionNode, Kind, visit } from 'graphql';
 
+// Service import
 import * as adminDatasetQueries from '@services/admin/dataset/queries';
+import * as adminFileQueries from '@services/admin/file/queries';
 import * as adminProcessingQueries from '@services/admin/processing/queries';
 import * as adminProcessorQueries from '@services/admin/processor/queries';
 import * as adminWorkerQueries from '@services/admin/worker/queries';
-import * as datasetQueries from '@services/dataset/queries';
-import * as healthCheckQueries from '@services/healthCheck/queries';
-import * as processingQueries from '@services/processing/queries';
-import * as processorQueries from '@services/processor/queries';
-import * as userQueries from '@services/user/queries';
-import * as workerQueries from '@services/worker/queries';
-
 import * as datasetFragments from '@services/dataset/fragments';
+import * as datasetQueries from '@services/dataset/queries';
 import * as fileFragments from '@services/file/fragments';
+import * as healthCheckQueries from '@services/healthCheck/queries';
 import * as processingFragments from '@services/processing/fragments';
+import * as processingQueries from '@services/processing/queries';
 import * as processorFragments from '@services/processor/fragments';
+import * as processorQueries from '@services/processor/queries';
 import * as userFragments from '@services/user/fragments';
+import * as userQueries from '@services/user/queries';
 import * as workerFragments from '@services/worker/fragments';
+import * as workerQueries from '@services/worker/queries';
 
 type DocumentModule = Record<string, unknown>;
 
 const queryModules: Record<string, DocumentModule> = {
   'admin/dataset/queries': adminDatasetQueries,
+  'admin/file/queries': adminFileQueries,
   'admin/processing/queries': adminProcessingQueries,
   'admin/processor/queries': adminProcessorQueries,
   'admin/worker/queries': adminWorkerQueries,
@@ -137,6 +149,172 @@ describe('service gql documents', () => {
       );
 
       expect(missing).toEqual([]);
+    },
+  );
+});
+
+const collectFieldNames = (document: DocumentNode): string[] => {
+  const fields: string[] = [];
+  visit(document, {
+    Field: node => {
+      fields.push(node.name.value);
+    },
+  });
+  return fields;
+};
+
+describe('worker registration token documents', () => {
+  it.each([
+    'ADMIN_WORKER_REGISTRATION_TOKEN_GET_MANY_QUERY',
+    'ADMIN_WORKER_REGISTRATION_TOKEN_DELETE_MUTATION',
+  ] as const)('never selects the secret token value in %s', name => {
+    expect(collectFieldNames(adminWorkerQueries[name])).not.toContain('token');
+  });
+
+  it.each([
+    'ADMIN_WORKER_REGISTRATION_TOKEN_GET_ONE_QUERY',
+    'ADMIN_WORKER_REGISTRATION_TOKEN_CREATE_MUTATION',
+  ] as const)('selects the secret token value in %s', name => {
+    expect(collectFieldNames(adminWorkerQueries[name])).toContain('token');
+  });
+});
+
+const ADMIN_ONLY_FIELDS = ['payload', 'agent_info', 'registration_token'];
+
+const nonAdminQueryExports = queryExports.filter(
+  ({ module }) => !module.startsWith('admin/') && module !== 'worker/queries',
+);
+
+describe('admin-only fields', () => {
+  it('detects the admin-only fields where an admin document selects them', () => {
+    expect(
+      collectFieldNames(adminWorkerQueries.ADMIN_WORKER_GET_ONE_QUERY),
+    ).toEqual(expect.arrayContaining(['payload', 'agent_info']));
+  });
+
+  it('checks the documents a regular user runs', () => {
+    expect(nonAdminQueryExports.map(({ module }) => module)).toEqual(
+      expect.arrayContaining([
+        'dataset/queries',
+        'processing/queries',
+        'processor/queries',
+        'user/queries',
+      ]),
+    );
+  });
+
+  it.each(nonAdminQueryExports)(
+    'never selects an admin-only field in $name of $module',
+    ({ document }) => {
+      expect(
+        collectFieldNames(document).filter(field =>
+          ADMIN_ONLY_FIELDS.includes(field),
+        ),
+      ).toEqual([]);
+    },
+  );
+});
+
+const schema = buildSchema(
+  readFileSync(join(__dirname, '..', 'api', 'gql', 'schema.graphql'), 'utf8'),
+);
+const queryFields = schema.getQueryType()?.getFields() ?? {};
+
+const rootFieldOf = (document: DocumentNode): FieldNode => {
+  const operation = document.definitions.find(
+    (definition): definition is OperationDefinitionNode =>
+      definition.kind === Kind.OPERATION_DEFINITION,
+  );
+  return operation?.selectionSet.selections[0] as FieldNode;
+};
+
+const listQueryExports = queryExports.filter(({ document }) => {
+  const field = queryFields[rootFieldOf(document)?.name.value];
+  return !!field && /PaginationConnection!?$/.test(String(field.type));
+});
+
+describe('list query documents', () => {
+  it('finds every list query of the services', () => {
+    expect(
+      listQueryExports.map(({ document }) => rootFieldOf(document).name.value),
+    ).toEqual(
+      expect.arrayContaining([
+        'adminDatasets',
+        'adminProcesses',
+        'adminProcessors',
+        'adminWorkerRegistrationTokens',
+        'adminWorkers',
+        'userDatasets',
+        'userProcesses',
+        'userProcessors',
+      ]),
+    );
+  });
+
+  it.each(listQueryExports)(
+    'passes every argument of the API list field in $name of $module',
+    ({ document }) => {
+      const rootField = rootFieldOf(document);
+      const passed = (rootField.arguments ?? []).map(
+        argument => argument.name.value,
+      );
+
+      expect(
+        queryFields[rootField.name.value].args
+          .map(argument => argument.name)
+          .filter(name => !passed.includes(name)),
+      ).toEqual([]);
+    },
+  );
+
+  it.each(listQueryExports)(
+    'binds every page and sorting argument to its own variable and reads the whole page in $name of $module',
+    ({ document }) => {
+      const rootField = rootFieldOf(document);
+      const boundVariables = Object.fromEntries(
+        (rootField.arguments ?? []).map(argument => [
+          argument.name.value,
+          argument.value.kind === Kind.VARIABLE
+            ? argument.value.name.value
+            : null,
+        ]),
+      );
+      const selected = (field: FieldNode | undefined) =>
+        (field?.selectionSet?.selections ?? [])
+          .map(selection => (selection as FieldNode).name.value)
+          .sort();
+      const childOf = (field: FieldNode, name: string) =>
+        field.selectionSet?.selections.find(
+          selection => (selection as FieldNode).name.value === name,
+        ) as FieldNode | undefined;
+      const pageArguments = [
+        'skip',
+        'take',
+        'after',
+        'first',
+        'before',
+        'last',
+        'sorting',
+      ];
+
+      expect({
+        bound: Object.fromEntries(
+          pageArguments.map(name => [name, boundVariables[name]]),
+        ),
+        connection: selected(rootField),
+        edge: selected(childOf(rootField, 'edges')),
+        pageInfo: selected(childOf(rootField, 'pageInfo')),
+      }).toEqual({
+        bound: Object.fromEntries(pageArguments.map(name => [name, name])),
+        connection: ['edges', 'pageInfo', 'totalCount'],
+        edge: ['cursor', 'node'],
+        pageInfo: [
+          'endCursor',
+          'hasNextPage',
+          'hasPreviousPage',
+          'startCursor',
+        ],
+      });
     },
   );
 });

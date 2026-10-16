@@ -1,9 +1,10 @@
-import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
+    include: ['src/**/*.spec.ts', 'src/**/*.test.ts'],
     setupFiles: ['dotenv/config'],
     coverage: {
       enabled: true,
@@ -15,6 +16,7 @@ export default defineConfig({
       include: ['src/**/*.ts'],
       exclude: [
         '**/*.spec.ts',
+        '**/*.test.ts',
         'src/@types/**',
         'src/api/gql/types.ts',
         '**/*.d.ts',

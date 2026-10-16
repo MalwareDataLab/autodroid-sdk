@@ -1,3 +1,4 @@
+// GraphQL import
 import { gql } from '@gql';
 
 export const USER_DATASET_GET_ONE_QUERY = gql(`

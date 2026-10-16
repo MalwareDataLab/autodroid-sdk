@@ -1,13 +1,19 @@
-import { AdminProcessing } from '@services/admin/processing';
+// Util import
+import { describePassthrough } from '../../../../test/support/passthrough';
+
+// Service import
 import {
   ADMIN_PROCESSING_CLEAN_EXPIRED_MUTATION,
   ADMIN_PROCESSING_DELETE_MUTATION,
+  ADMIN_PROCESSING_FAIL_DANGLING_MUTATION,
   ADMIN_PROCESSING_GET_MANY_QUERY,
   ADMIN_PROCESSING_GET_ONE_QUERY,
+  ADMIN_PROCESSING_TIME_ESTIMATION_QUERY,
   ADMIN_PROCESSING_UPDATE_MUTATION,
 } from '@services/admin/processing/queries';
 
-import { describePassthrough } from '../../../../test/support/passthrough';
+// Target import
+import { AdminProcessing } from '@services/admin/processing';
 
 describePassthrough(
   'AdminProcessing service',
@@ -36,6 +42,18 @@ describePassthrough(
       kind: 'mutate',
       document: ADMIN_PROCESSING_DELETE_MUTATION,
       rootField: 'adminProcessingDelete',
+    },
+    {
+      method: 'getTimeEstimation',
+      kind: 'query',
+      document: ADMIN_PROCESSING_TIME_ESTIMATION_QUERY,
+      rootField: 'adminProcessingTimeEstimation',
+    },
+    {
+      method: 'failDangling',
+      kind: 'mutate',
+      document: ADMIN_PROCESSING_FAIL_DANGLING_MUTATION,
+      rootField: 'adminProcessingFailDangling',
     },
     {
       method: 'cleanExpired',
