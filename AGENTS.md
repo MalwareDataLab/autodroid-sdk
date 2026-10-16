@@ -4,7 +4,7 @@ Rules for every change to this repository, by people or agents. Usage is documen
 
 ## What this repository is
 
-The `autodroid` npm package: a typed GraphQL client for the AutoDroid API (`AutoDroidSdk`), the `autodroid` command line, and `autodroid mcp`, a stdio MCP server. The command line and the MCP tools come from one operation catalog. Node 20 or later, built with tsup, released with Changesets. The server is `autodroid-api-gateway`; the web app and the worker consume this package.
+The `autodroid` npm package: a typed GraphQL client for the AutoDroid API (`AutoDroidSdk`), the `autodroid` command line, and `autodroid mcp`, a stdio MCP server. The command line and the MCP tools come from one operation catalog. Node 20 or later, built with tsup, released with Changesets. The server is `autodroid-api`; the web app and the worker consume this package.
 
 ## Commands
 

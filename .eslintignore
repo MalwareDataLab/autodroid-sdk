@@ -227,3 +227,6 @@ yalc.lock
 
 # Graphql Codegen
 src/api/gql/**
+
+# Backend checkout used by the release workflow
+autodroid-api/

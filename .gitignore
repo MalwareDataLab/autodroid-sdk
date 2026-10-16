@@ -4,3 +4,6 @@ dist
 .env.test
 ./src/api/gql
 test/outputs
+
+# Backend checkout used by the release workflow
+autodroid-api/

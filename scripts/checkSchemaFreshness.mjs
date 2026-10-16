@@ -9,7 +9,7 @@ const BACKEND_SCHEMA_PATH =
   process.env.BACKEND_SCHEMA_PATH ||
   path.join(
     SDK_ROOT,
-    '../autodroid-api-gateway/packages/api/src/shared/infrastructure/graphql/generated/schema.gql',
+    '../autodroid-api/packages/api/src/shared/infrastructure/graphql/generated/schema.gql',
   );
 
 const BACKEND_ONLY_DIRECTIVES = ['auth', 'constraint'];
@@ -65,10 +65,10 @@ const normalize = filePath =>
   );
 
 if (!existsSync(BACKEND_SCHEMA_PATH)) {
-  const message = `Backend schema not found at ${BACKEND_SCHEMA_PATH} (sibling autodroid-api-gateway checkout not present).`;
+  const message = `Backend schema not found at ${BACKEND_SCHEMA_PATH} (sibling autodroid-api checkout not present).`;
   if (process.env.CI) {
     console.error(
-      `${message}\nThis check cannot run in CI without it — add a checkout step for autodroid-api-gateway alongside this repo, or remove "lint:schema" from CI if that's not intended.`,
+      `${message}\nThis check cannot run in CI without it — add a checkout step for autodroid-api alongside this repo, or remove "lint:schema" from CI if that's not intended.`,
     );
     process.exit(1);
   }

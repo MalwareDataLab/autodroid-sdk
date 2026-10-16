@@ -41,7 +41,7 @@ Ao participar, siga o [código de conduta](./CODE_OF_CONDUCT.md).
 
 | Comando | O que faz |
 | --- | --- |
-| `yarn lint` | ESLint, `tsc` e a checagem do esquema GraphQL. A checagem lê o repositório da API em `../autodroid-api-gateway`, ou o caminho de `BACKEND_SCHEMA_PATH` |
+| `yarn lint` | ESLint, `tsc` e a checagem do esquema GraphQL. A checagem lê o repositório da API em `../autodroid-api`, ou o caminho de `BACKEND_SCHEMA_PATH` |
 | `yarn test` | Compila o pacote e roda todas as camadas de teste, com cobertura de 100% |
 | `yarn codegen` | Gera o cliente a partir do esquema da API, em `BACKEND_GRAPHQL_ENDPOINT` (padrão `http://localhost:3333/graphql`) |
 | `yarn contract` | Gera o contrato das ferramentas MCP, que a API guarda em cópia idêntica |
