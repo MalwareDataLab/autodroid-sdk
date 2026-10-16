@@ -1,7 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
 
+// Type import
 import { Res } from '@utils/response.type';
 
+// GraphQL import
 import {
   HealthCheckQuery,
   HealthCheckQueryVariables,
@@ -9,8 +12,9 @@ import {
   HealthLivenessCheckQueryVariables,
   HealthReadinessCheckQuery,
   HealthReadinessCheckQueryVariables,
-} from '@api/gql/graphql';
+} from '@gql/graphql';
 
+// Service import
 import {
   HEALTH_CHECK_QUERY,
   HEALTH_LIVENESS_CHECK_QUERY,

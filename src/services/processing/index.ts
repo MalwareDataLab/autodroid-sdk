@@ -1,5 +1,10 @@
+// SDK import
+import { AutoDroidSdk } from '../..';
+
+// Type import
 import type { Res } from '@utils/response.type';
 
+// GraphQL import
 import type {
   UserProcessingQueryVariables,
   UserProcessingQuery,
@@ -19,6 +24,7 @@ import type {
   UserProcessingEstimatedFinishQuery,
 } from '@gql/graphql';
 
+// Service import
 import {
   USER_PROCESSING_GET_ONE_QUERY,
   USER_PROCESSING_GET_MANY_QUERY,
@@ -29,7 +35,6 @@ import {
   USER_PROCESSING_EXECUTION_TIME_ESTIMATION_QUERY,
   USER_PROCESSING_FINISH_TIME_ESTIMATION_QUERY,
 } from './queries';
-import { AutoDroidSdk } from '../..';
 
 export class Processing {
   constructor(private context: AutoDroidSdk) {}

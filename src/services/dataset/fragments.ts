@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const DATASET_FRAGMENT = gql(`
   fragment DatasetFragment on Dataset {

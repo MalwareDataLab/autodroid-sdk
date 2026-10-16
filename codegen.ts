@@ -1,12 +1,12 @@
-import dotenv from 'dotenv';
 import { CodegenConfig } from '@graphql-codegen/cli';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const config: CodegenConfig = {
   schema:
     process.env.BACKEND_GRAPHQL_ENDPOINT || 'http://localhost:3333/graphql',
-  documents: ['./src/**/*.{ts,tsx,js,jsx}'],
+  documents: ['./src/**/*.{ts,tsx,js,jsx}', '!./src/**/*.spec.{ts,tsx,js,jsx}'],
   generates: {
     './src/api/gql/schema.graphql': {
       plugins: ['schema-ast'],

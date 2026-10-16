@@ -1,7 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
 
+// Type import
 import { Res } from '@utils/response.type';
 
+// GraphQL import
 import {
   AdminWorkerCleanMissingMutation,
   AdminWorkerCleanMissingMutationVariables,
@@ -9,6 +12,8 @@ import {
   AdminWorkerDeleteMutationVariables,
   AdminWorkerQuery,
   AdminWorkerQueryVariables,
+  AdminWorkerUpdateMutation,
+  AdminWorkerUpdateMutationVariables,
   AdminWorkerRegistrationTokenCreateMutation,
   AdminWorkerRegistrationTokenCreateMutationVariables,
   AdminWorkerRegistrationTokenDeleteMutation,
@@ -19,12 +24,14 @@ import {
   AdminWorkerRegistrationTokensQueryVariables,
   AdminWorkersQuery,
   AdminWorkersQueryVariables,
-} from '@api/gql/graphql';
+} from '@gql/graphql';
 
+// Service import
 import {
   ADMIN_WORKER_DELETE_MUTATION,
   ADMIN_WORKER_GET_ONE_QUERY,
   ADMIN_WORKER_GET_MANY_QUERY,
+  ADMIN_WORKER_UPDATE_MUTATION,
   ADMIN_WORKER_REGISTRATION_TOKEN_GET_ONE_QUERY,
   ADMIN_WORKER_REGISTRATION_TOKEN_GET_MANY_QUERY,
   ADMIN_WORKER_REGISTRATION_TOKEN_CREATE_MUTATION,
@@ -53,6 +60,16 @@ export class AdminWorker {
       variables,
     });
     return data.adminWorkers;
+  }
+
+  public async update(
+    variables: AdminWorkerUpdateMutationVariables,
+  ): Promise<Res<AdminWorkerUpdateMutation>> {
+    const { data } = await this.context.apolloClient.mutate({
+      mutation: ADMIN_WORKER_UPDATE_MUTATION,
+      variables,
+    });
+    return data!.adminWorkerUpdate;
   }
 
   public async delete(

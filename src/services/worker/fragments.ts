@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const WORKER_REGISTRATION_TOKEN_FRAGMENT = gql(`
   fragment WorkerRegistrationTokenFragment on WorkerRegistrationToken {
@@ -8,9 +9,15 @@ export const WORKER_REGISTRATION_TOKEN_FRAGMENT = gql(`
     id
     seq
     is_unlimited_usage
-    token
     updated_at
     user_id
+  }
+`);
+
+export const WORKER_REGISTRATION_TOKEN_WITH_VALUE_FRAGMENT = gql(`
+  fragment WorkerRegistrationTokenWithValueFragment on WorkerRegistrationToken {
+    ...WorkerRegistrationTokenFragment
+    token
   }
 `);
 
@@ -22,6 +29,7 @@ export const WORKER_FRAGMENT = gql(`
     id
     seq
     internal_id
+    name
     payload
     refresh_token
     refresh_token_expires_at

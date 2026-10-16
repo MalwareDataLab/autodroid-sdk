@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const USER_PROCESSOR_GET_ONE_QUERY = gql(`
   query UserProcessor($processorId: String!) {

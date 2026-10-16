@@ -1,0 +1,852 @@
+[
+  {
+    "name": "whoami",
+    "field": "user",
+    "description": "Show the authenticated user.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "id",
+      "name",
+      "email",
+      "is_admin",
+      "language"
+    ]
+  },
+  {
+    "name": "show_session",
+    "field": "session",
+    "description": "Show how long the current session stays valid.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "user",
+      "user_auth_provider_conn_id",
+      "access_token_expires_at",
+      "refresh_token_expires_at"
+    ]
+  },
+  {
+    "name": "close_sessions",
+    "field": "userSessionsClose",
+    "description": "Sign this account out everywhere: every session of the account is closed and must log in again, and every app or agent connected over MCP loses access.",
+    "access": "user",
+    "effect": "destructive",
+    "output": [
+      "closed"
+    ]
+  },
+  {
+    "name": "update_profile",
+    "field": "userUpdateData",
+    "description": "Update your profile.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "name",
+      "email",
+      "is_admin",
+      "language"
+    ]
+  },
+  {
+    "name": "update_profile_learning_data",
+    "field": "userUpdateLearningData",
+    "description": "Replace your learning-progress data.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "name",
+      "email",
+      "is_admin",
+      "language"
+    ]
+  },
+  {
+    "name": "list_mcp_connections",
+    "field": "userMcpAuthorizationGrants",
+    "description": "List the apps and agents you authorized to use your account over MCP. Returns one page: items, total_count (how many match in all) and has_next_page.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "client_id",
+      "client_name",
+      "client_verified_host",
+      "scopes",
+      "created_at",
+      "last_used_at",
+      "expires_at"
+    ]
+  },
+  {
+    "name": "revoke_mcp_connection",
+    "field": "userMcpAuthorizationGrantRevoke",
+    "description": "Revoke an app or agent connection; it loses access to your account at once.",
+    "access": "user",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "client_id",
+      "client_name",
+      "client_verified_host",
+      "scopes",
+      "created_at",
+      "last_used_at",
+      "expires_at"
+    ]
+  },
+  {
+    "name": "list_datasets",
+    "field": "userDatasets",
+    "description": "List the datasets you can use: your PRIVATE datasets plus every PUBLIC one (user_id is each owner's id); your datasets under review are not listed. Returns one page: items, total_count (how many match in all) and has_next_page.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "show_dataset",
+    "field": "userDataset",
+    "description": "Show one dataset, yours or any PUBLIC one, with a download link to its file.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id",
+      "file"
+    ]
+  },
+  {
+    "name": "create_dataset",
+    "field": "userDatasetCreate",
+    "description": "Create a dataset from a local file: the file is described, registered and uploaded.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "update_dataset",
+    "field": "userDatasetUpdate",
+    "description": "Change one of your datasets' description and tags. Replaces both: an omitted one is cleared.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "delete_dataset",
+    "field": "userDatasetDelete",
+    "description": "Delete one of your datasets.",
+    "access": "user",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "publish_dataset",
+    "field": "userDatasetRequestPublication",
+    "description": "Ask for one of your datasets to be reviewed for publication.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "list_processors",
+    "field": "userProcessors",
+    "description": "List the data synthesis processors you can use: every PUBLIC one plus the HIDDEN ones you created. Returns one page: items, total_count (how many match in all) and has_next_page.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "name",
+      "version",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "show_processor",
+    "field": "userProcessor",
+    "description": "Show one processor, any PUBLIC one or one you created, and its parameters.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "list_processing",
+    "field": "userProcesses",
+    "description": "List the processing runs you can see: your own and every PUBLIC one (user_id is each owner's id). Returns one page: items, total_count (how many match in all) and has_next_page.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "show_processing",
+    "field": "userProcessing",
+    "description": "Show one processing run, yours or any PUBLIC one, including its status, its dataset and processor, and the download links of its result and metrics files.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id",
+      "dataset",
+      "processor",
+      "result_file",
+      "metrics_file"
+    ]
+  },
+  {
+    "name": "run_processing",
+    "field": "userRequestDatasetProcessing",
+    "description": "Start a processing run of a dataset with a processor.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "delete_processing",
+    "field": "userProcessingDelete",
+    "description": "Delete one of your processing runs.",
+    "access": "user",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "extend_processing",
+    "field": "userProcessingExtendKeepUntil",
+    "description": "Keep the files of a processing run until a later date.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "set_processing_visibility",
+    "field": "userProcessingUpdateVisibility",
+    "description": "Make a processing run private or public.",
+    "access": "user",
+    "effect": "write",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "estimate_processing_time",
+    "field": "userProcessingTimeEstimation",
+    "description": "Estimate a processing run's duration before starting it, given a dataset and a processor.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "dataset_id",
+      "processor_id",
+      "estimated_waiting_time",
+      "estimated_execution_time",
+      "estimated_total_time"
+    ]
+  },
+  {
+    "name": "estimate_processing_finish",
+    "field": "userProcessingEstimatedFinish",
+    "description": "Estimate when an in-progress processing run will finish.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "processing_id",
+      "dataset_id",
+      "processor_id",
+      "estimated_start_time",
+      "estimated_finish_time"
+    ]
+  },
+  {
+    "name": "health_check",
+    "field": "healthCheck",
+    "description": "Check that the AutoDroid API answers (returns its clock).",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "checked_at"
+    ]
+  },
+  {
+    "name": "health_liveness",
+    "field": "healthLivenessCheck",
+    "description": "Check that the AutoDroid API process is alive.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "checked_at"
+    ]
+  },
+  {
+    "name": "health_readiness",
+    "field": "healthReadinessCheck",
+    "description": "Check that the AutoDroid API and the services it depends on are ready.",
+    "access": "user",
+    "effect": "read",
+    "output": [
+      "checked_at"
+    ]
+  },
+  {
+    "name": "admin_list_datasets",
+    "field": "adminDatasets",
+    "description": "List every dataset across all users. Returns one page: items, total_count (how many match in all) and has_next_page. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_show_dataset",
+    "field": "adminDataset",
+    "description": "Show one dataset, owned by any user. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id",
+      "file"
+    ]
+  },
+  {
+    "name": "admin_update_dataset",
+    "field": "adminDatasetUpdate",
+    "description": "Change any dataset's description and tags. Replaces both: an omitted one is cleared. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_set_dataset_visibility",
+    "field": "adminDatasetUpdateVisibility",
+    "description": "Change any dataset's visibility. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_delete_dataset",
+    "field": "adminDatasetDelete",
+    "description": "Delete any dataset. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "description",
+      "tags",
+      "visibility",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_list_processors",
+    "field": "adminProcessors",
+    "description": "List every processor, including non-public ones. Returns one page: items, total_count (how many match in all) and has_next_page. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "name",
+      "version",
+      "image_tag",
+      "description",
+      "tags",
+      "allowed_mime_types",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "admin_show_processor",
+    "field": "adminProcessor",
+    "description": "Show one processor with its whole definition, including non-public ones. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "image_tag",
+      "description",
+      "tags",
+      "allowed_mime_types",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "admin_create_processor",
+    "field": "adminProcessorCreate",
+    "description": "Create a processor. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "image_tag",
+      "description",
+      "tags",
+      "allowed_mime_types",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "admin_update_processor",
+    "field": "adminProcessorUpdate",
+    "description": "Replace a processor's whole definition with the given one; an omitted description or tags is cleared. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "image_tag",
+      "description",
+      "tags",
+      "allowed_mime_types",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "admin_delete_processor",
+    "field": "adminProcessorDelete",
+    "description": "Delete a processor. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "image_tag",
+      "description",
+      "tags",
+      "allowed_mime_types",
+      "visibility",
+      "configuration"
+    ]
+  },
+  {
+    "name": "admin_list_processing",
+    "field": "adminProcesses",
+    "description": "List every processing run across all users. Returns one page: items, total_count (how many match in all) and has_next_page. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_show_processing",
+    "field": "adminProcessing",
+    "description": "Show one processing run, owned by any user. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id",
+      "dataset",
+      "processor",
+      "result_file",
+      "metrics_file"
+    ]
+  },
+  {
+    "name": "admin_update_processing",
+    "field": "adminProcessingUpdate",
+    "description": "Change any processing run's keep-until moment and, optionally, its visibility. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_delete_processing",
+    "field": "adminProcessingDelete",
+    "description": "Delete any processing run. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "status",
+      "visibility",
+      "keep_until",
+      "created_at",
+      "started_at",
+      "finished_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_clean_expired_processing",
+    "field": "adminProcessingCleanExpired",
+    "description": "Permanently remove every expired processing run. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "removed"
+    ]
+  },
+  {
+    "name": "admin_estimate_processing_time",
+    "field": "adminProcessingTimeEstimation",
+    "description": "Estimate processing durations for a dataset and/or a processor (all combinations when omitted). Returns one page: items, total_count (how many match in all) and has_next_page. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "dataset_id",
+      "processor_id",
+      "estimated_waiting_time",
+      "estimated_execution_time",
+      "estimated_total_time"
+    ]
+  },
+  {
+    "name": "admin_fail_dangling_processing",
+    "field": "adminProcessingFailDangling",
+    "description": "Mark processing runs left dangling (not progressing) as failed. Without filters, fails the PENDING runs created more than one day ago. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "failed"
+    ]
+  },
+  {
+    "name": "admin_list_workers",
+    "field": "adminWorkers",
+    "description": "List every registered worker across all users. Returns one page: items, total_count (how many match in all) and has_next_page. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "name",
+      "version",
+      "description",
+      "tags",
+      "last_seen_at",
+      "archived_at",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_show_worker",
+    "field": "adminWorker",
+    "description": "Show one registered worker. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "description",
+      "tags",
+      "last_seen_at",
+      "archived_at",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_update_worker",
+    "field": "adminWorkerUpdate",
+    "description": "Change a worker's description or tags. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "description",
+      "tags",
+      "last_seen_at",
+      "archived_at",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_delete_worker",
+    "field": "adminWorkerDelete",
+    "description": "Delete a worker. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "name",
+      "version",
+      "description",
+      "tags",
+      "last_seen_at",
+      "archived_at",
+      "created_at",
+      "user_id"
+    ]
+  },
+  {
+    "name": "admin_clean_missing_workers",
+    "field": "adminWorkerCleanMissing",
+    "description": "Remove every worker that stopped reporting. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "removed"
+    ]
+  },
+  {
+    "name": "admin_list_worker_registration_tokens",
+    "field": "adminWorkerRegistrationTokens",
+    "description": "List the worker registration tokens, without their values. Returns one page: items, total_count (how many match in all) and has_next_page. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "items",
+      "total_count",
+      "has_next_page"
+    ],
+    "itemOutput": [
+      "id",
+      "is_unlimited_usage",
+      "expires_at",
+      "created_at"
+    ]
+  },
+  {
+    "name": "admin_show_worker_registration_token",
+    "field": "adminWorkerRegistrationToken",
+    "description": "Show one worker registration token, including its value. Requires admin access.",
+    "access": "admin",
+    "effect": "read",
+    "output": [
+      "id",
+      "is_unlimited_usage",
+      "expires_at",
+      "created_at",
+      "token"
+    ]
+  },
+  {
+    "name": "admin_create_worker_registration_token",
+    "field": "adminWorkerRegistrationTokenCreate",
+    "description": "Create a worker registration token and show its value. Requires admin access.",
+    "access": "admin",
+    "effect": "write",
+    "output": [
+      "id",
+      "is_unlimited_usage",
+      "expires_at",
+      "created_at",
+      "token"
+    ]
+  },
+  {
+    "name": "admin_delete_worker_registration_token",
+    "field": "adminWorkerRegistrationTokenDelete",
+    "description": "Delete a worker registration token; its value is not shown. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "id",
+      "is_unlimited_usage",
+      "expires_at",
+      "created_at"
+    ]
+  },
+  {
+    "name": "admin_remove_dangling_files",
+    "field": "adminFileRemoveAllDangling",
+    "description": "Permanently remove every stored file that no dataset or processing run uses. Requires admin access.",
+    "access": "admin",
+    "effect": "destructive",
+    "output": [
+      "removed"
+    ]
+  }
+]

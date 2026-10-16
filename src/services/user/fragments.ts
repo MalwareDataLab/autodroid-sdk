@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const USER_FRAGMENT = gql(`
   fragment UserFragment on User {
@@ -26,6 +27,20 @@ export const USER_AUTH_PROVIDER_CONN_FRAGMENT = gql(`
     created_at
     updated_at
     user_id
+  }
+`);
+
+export const MCP_AUTHORIZATION_GRANT_FRAGMENT = gql(`
+  fragment McpAuthorizationGrantFragment on McpAuthorizationGrant {
+    id
+    client_id
+    client_name
+    client_verified_host
+    resource
+    scopes
+    created_at
+    last_used_at
+    expires_at
   }
 `);
 
