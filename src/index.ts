@@ -1,13 +1,15 @@
 import { ApolloClient } from '@apollo/client/core';
 
+// Client import
 import { IAutoDroidSdkParams, createApolloClient } from '@api/apolloClient';
 
+// Service import
 import { Admin } from '@services/admin';
-import { User } from '@services/user';
 import { Dataset } from '@services/dataset';
-import { Processor } from '@services/processor';
-import { Processing } from '@services/processing';
 import { HealthCheck } from '@services/healthCheck';
+import { Processing } from '@services/processing';
+import { Processor } from '@services/processor';
+import { User } from '@services/user';
 import { Worker } from '@services/worker';
 
 class AutoDroidSdk {
@@ -34,7 +36,7 @@ class AutoDroidSdk {
   }
 }
 
-export * from '@gql/types';
+export * from '@gql/graphql';
 
 export { AutoDroidSdkResponseType } from '@utils/response.type';
 export { AutoDroidSdk };

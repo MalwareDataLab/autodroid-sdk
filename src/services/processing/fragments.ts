@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const PROCESSING_FRAGMENT = gql(`
   fragment ProcessingFragment on Processing {

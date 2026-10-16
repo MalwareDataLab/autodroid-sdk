@@ -1,8 +1,15 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
+
+// Type import
 import type { Res } from '@utils/response.type';
 
+// GraphQL import
 import type {
   SessionQuery,
+  UserMcpAuthorizationGrantRevokeMutation,
+  UserMcpAuthorizationGrantRevokeMutationVariables,
+  UserMcpAuthorizationGrantsQuery,
   UserQuery,
   UserSessionsCloseMutation,
   UserSessionsCloseMutationVariables,
@@ -12,8 +19,11 @@ import type {
   UserUpdateLearningDataMutationVariables,
 } from '@gql/graphql';
 
+// Service import
 import {
   SESSION_QUERY,
+  USER_MCP_AUTHORIZATION_GRANT_REVOKE_MUTATION,
+  USER_MCP_AUTHORIZATION_GRANTS_QUERY,
   USER_QUERY,
   USER_SESSIONS_CLOSE_MUTATION,
   USER_UPDATE_DATA_MUTATION,
@@ -55,6 +65,25 @@ export class User {
       variables,
     });
     return data!.userUpdateLearningData;
+  }
+
+  public async getMcpAuthorizationGrants(): Promise<
+    Res<UserMcpAuthorizationGrantsQuery>
+  > {
+    const { data } = await this.context.apolloClient.query({
+      query: USER_MCP_AUTHORIZATION_GRANTS_QUERY,
+    });
+    return data.userMcpAuthorizationGrants;
+  }
+
+  public async revokeMcpAuthorizationGrant(
+    variables: UserMcpAuthorizationGrantRevokeMutationVariables,
+  ): Promise<Res<UserMcpAuthorizationGrantRevokeMutation>> {
+    const { data } = await this.context.apolloClient.mutate({
+      mutation: USER_MCP_AUTHORIZATION_GRANT_REVOKE_MUTATION,
+      variables,
+    });
+    return data!.userMcpAuthorizationGrantRevoke;
   }
 
   public async closeSessions(

@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const ADMIN_WORKER_GET_ONE_QUERY = gql(`
   query AdminWorker($workerId: String!) {
@@ -13,6 +14,7 @@ export const ADMIN_WORKER_GET_MANY_QUERY = gql(`
     $userId: String,
     $registrationTokenId: String,
     $archived: Boolean,
+    $missing: Boolean,
 
     $after: ConnectionCursor,
     $before: ConnectionCursor,
@@ -29,6 +31,7 @@ export const ADMIN_WORKER_GET_MANY_QUERY = gql(`
       user_id: $userId,
       registration_token_id: $registrationTokenId,
       archived: $archived,
+      missing: $missing,
 
       after: $after,
       before: $before,
@@ -77,7 +80,7 @@ export const ADMIN_WORKER_DELETE_MUTATION = gql(`
 export const ADMIN_WORKER_REGISTRATION_TOKEN_GET_ONE_QUERY = gql(`
   query AdminWorkerRegistrationToken($workerRegistrationTokenId: String!) {
     adminWorkerRegistrationToken(worker_registration_token_id: $workerRegistrationTokenId) {
-      ...WorkerRegistrationTokenFragment
+      ...WorkerRegistrationTokenWithValueFragment
     }
   }
 `);
@@ -90,6 +93,7 @@ export const ADMIN_WORKER_REGISTRATION_TOKEN_GET_MANY_QUERY = gql(`
     $archived: Boolean,
     $expired: Boolean,
     $isUnlimitedUsage: Boolean,
+    $token: String,
 
     $after: ConnectionCursor,
     $before: ConnectionCursor,
@@ -109,6 +113,7 @@ export const ADMIN_WORKER_REGISTRATION_TOKEN_GET_MANY_QUERY = gql(`
       archived: $archived,
       expired: $expired,
       is_unlimited_usage: $isUnlimitedUsage,
+      token: $token,
 
       after: $after,
       before: $before,
@@ -141,7 +146,7 @@ export const ADMIN_WORKER_REGISTRATION_TOKEN_GET_MANY_QUERY = gql(`
 export const ADMIN_WORKER_REGISTRATION_TOKEN_CREATE_MUTATION = gql(`
   mutation AdminWorkerRegistrationTokenCreate($data: WorkerRegistrationTokenCreateSchema!) {
     adminWorkerRegistrationTokenCreate(data: $data) {
-      ...WorkerRegistrationTokenFragment
+      ...WorkerRegistrationTokenWithValueFragment
     }
   }
 `);

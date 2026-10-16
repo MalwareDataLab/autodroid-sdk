@@ -4,9 +4,9 @@ import {
   createHttpLink,
   ApolloLink,
 } from '@apollo/client/core';
-import { onError } from '@apollo/client/link/error';
 import { NetworkError } from '@apollo/client/errors';
 import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
 import { withScalars } from 'apollo-link-scalars';
 import {
   GraphQLError,
@@ -18,6 +18,7 @@ import {
 } from 'graphql';
 import { DateTimeISOResolver } from 'graphql-scalars';
 
+// Data import
 import introspectionResult from './gql/schema.graphql.json' assert { type: 'json' };
 
 interface IAutoDroidSdkParams {
@@ -35,7 +36,7 @@ interface IAutoDroidSdkParams {
   return this.toString();
 };
 
-const BigIntScalar = new GraphQLScalarType({
+export const BigIntScalar = new GraphQLScalarType({
   name: 'BigInt',
   description:
     'The `BigInt` scalar type represents non-fractional signed whole numeric values.',
@@ -93,8 +94,10 @@ export const createApolloClient = ({
       onNetworkError(networkError);
 
     if (
-      graphQLErrors?.some(
-        error => error.extensions?.code === 'UNAUTHENTICATED',
+      graphQLErrors?.some(error =>
+        ['UNAUTHENTICATED', 'UNAUTHORIZED'].includes(
+          String(error.extensions?.code ?? ''),
+        ),
       ) &&
       typeof onAuthError === 'function'
     )

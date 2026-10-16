@@ -1,7 +1,10 @@
+// SDK import
 import type { AutoDroidSdk } from '@package';
 
+// Type import
 import { Res } from '@utils/response.type';
 
+// GraphQL import
 import {
   AdminProcessingDeleteMutation,
   AdminProcessingDeleteMutationVariables,
@@ -13,14 +16,21 @@ import {
   AdminProcessingUpdateMutationVariables,
   AdminProcessingCleanExpiredMutationVariables,
   AdminProcessingCleanExpiredMutation,
-} from '@api/gql/graphql';
+  AdminProcessingFailDanglingMutation,
+  AdminProcessingFailDanglingMutationVariables,
+  AdminProcessingTimeEstimationQuery,
+  AdminProcessingTimeEstimationQueryVariables,
+} from '@gql/graphql';
 
+// Service import
 import {
   ADMIN_PROCESSING_DELETE_MUTATION,
   ADMIN_PROCESSING_GET_ONE_QUERY,
   ADMIN_PROCESSING_UPDATE_MUTATION,
   ADMIN_PROCESSING_GET_MANY_QUERY,
   ADMIN_PROCESSING_CLEAN_EXPIRED_MUTATION,
+  ADMIN_PROCESSING_FAIL_DANGLING_MUTATION,
+  ADMIN_PROCESSING_TIME_ESTIMATION_QUERY,
 } from './queries';
 
 export class AdminProcessing {
@@ -64,6 +74,26 @@ export class AdminProcessing {
       variables,
     });
     return data!.adminProcessingDelete;
+  }
+
+  public async getTimeEstimation(
+    variables: AdminProcessingTimeEstimationQueryVariables,
+  ): Promise<Res<AdminProcessingTimeEstimationQuery>> {
+    const { data } = await this.context.apolloClient.query({
+      query: ADMIN_PROCESSING_TIME_ESTIMATION_QUERY,
+      variables,
+    });
+    return data.adminProcessingTimeEstimation;
+  }
+
+  public async failDangling(
+    variables: AdminProcessingFailDanglingMutationVariables,
+  ): Promise<Res<AdminProcessingFailDanglingMutation>> {
+    const { data } = await this.context.apolloClient.mutate({
+      mutation: ADMIN_PROCESSING_FAIL_DANGLING_MUTATION,
+      variables,
+    });
+    return data!.adminProcessingFailDangling;
   }
 
   public async cleanExpired(

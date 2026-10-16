@@ -24,6 +24,13 @@ jobs:
       - name: Checkout to Branch
         uses: actions/checkout@v3
 
+      - name: Checkout autodroid-api-gateway (for schema freshness check)
+        uses: actions/checkout@v3
+        with:
+          repository: MalwareDataLab/autodroid-api-gateway
+          token: ${{ secrets.CROSS_REPO_CHECKOUT_TOKEN }}
+          path: autodroid-api-gateway
+
       - name: Setup Node.js 20
         uses: actions/setup-node@v3
         with:
@@ -34,6 +41,11 @@ jobs:
 
       - name: Lint
         run: yarn lint
+        env:
+          BACKEND_SCHEMA_PATH: ${{ github.workspace }}/autodroid-api-gateway/packages/api/src/shared/infrastructure/graphql/generated/schema.gql
+
+      - name: Test
+        run: yarn test
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets

@@ -1,4 +1,5 @@
-import { gql } from '@api/gql';
+// GraphQL import
+import { gql } from '@gql';
 
 export const ADMIN_DATASET_GET_ONE_QUERY = gql(`
   query AdminDataset($datasetId: String!) {
@@ -10,8 +11,8 @@ export const ADMIN_DATASET_GET_ONE_QUERY = gql(`
 
 export const ADMIN_DATASET_GET_MANY_QUERY = gql(`
   query AdminDatasets(
-    $user_id: String,
-    $file_id: String,
+    $userId: String,
+    $fileId: String,
     $visibility: DATASET_VISIBILITY,
 
     $after: ConnectionCursor,
@@ -26,8 +27,8 @@ export const ADMIN_DATASET_GET_MANY_QUERY = gql(`
     $sorting: [SortingFieldSchema!]
   ) {
     adminDatasets(
-      user_id: $user_id,
-      file_id: $file_id,
+      user_id: $userId,
+      file_id: $fileId,
       visibility: $visibility,
 
       after: $after,
