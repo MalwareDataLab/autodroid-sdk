@@ -13,9 +13,9 @@ const isNotAuthenticatedError = (error: unknown): boolean =>
   (error as { networkError?: unknown })?.networkError instanceof
     NotAuthenticatedError;
 
-const DEFAULT_API_URL = 'https://mdl-api.unihacker.club/graphql';
+const DEFAULT_API_URL = 'https://api-autodroid.laviola.dev/graphql';
 const DEFAULT_FIREBASE_WEB_API_KEY = 'AIzaSyBt-FkToQznrkXvSHYF2fM3G4XajCsgihs';
-const DEFAULT_WEB_URL = 'https://mdl.unihacker.club';
+const DEFAULT_WEB_URL = 'https://autodroid.laviola.dev';
 
 const getCliConfig = (): ICliConfig => ({
   endpoint: process.env.AUTODROID_CLI_API_URL || DEFAULT_API_URL,
