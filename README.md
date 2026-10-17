@@ -57,7 +57,7 @@ A API autentica com o Firebase. Quem usa a instância pública da AutoDroid não
 import { AutoDroidSdk } from "autodroid";
 
 const autoDroid = new AutoDroidSdk({
-  baseUrl: "https://mdl-api.unihacker.club/graphql",
+  baseUrl: "https://api-autodroid.laviola.dev/graphql",
 
   getAuthToken: async () => {
     const token = (await firebaseAuth.currentUser?.getIdToken()) || "";
@@ -138,11 +138,11 @@ As listas paginam com `--take` (quantos itens, padrão 10, máximo 100) e `--ski
 
 Sem configuração, a CLI usa o ambiente de produção. Para apontar para outro ambiente, defina:
 
-| Variável                             | Padrão                                    | Uso                                                     |
-| ------------------------------------ | ----------------------------------------- | ------------------------------------------------------- |
-| `AUTODROID_CLI_API_URL`              | `https://mdl-api.unihacker.club/graphql`  | Endpoint GraphQL da API (a base REST é derivada dele)   |
-| `AUTODROID_CLI_WEB_URL`              | `https://mdl.unihacker.club`              | Aplicação web onde o login pelo navegador é confirmado  |
-| `AUTODROID_CLI_FIREBASE_WEB_API_KEY` | `AIzaSyBt-FkToQznrkXvSHYF2fM3G4XajCsgihs` | Chave web pública do Firebase usada para obter a sessão |
+| Variável                             | Padrão                                      | Uso                                                     |
+| ------------------------------------ | ------------------------------------------- | ------------------------------------------------------- |
+| `AUTODROID_CLI_API_URL`              | `https://api-autodroid.laviola.dev/graphql` | Endpoint GraphQL da API (a base REST é derivada dele)   |
+| `AUTODROID_CLI_WEB_URL`              | `https://autodroid.laviola.dev`             | Aplicação web onde o login pelo navegador é confirmado  |
+| `AUTODROID_CLI_FIREBASE_WEB_API_KEY` | `AIzaSyBt-FkToQznrkXvSHYF2fM3G4XajCsgihs`   | Chave web pública do Firebase usada para obter a sessão |
 
 ### Administração
 
