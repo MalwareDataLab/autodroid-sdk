@@ -51,7 +51,7 @@ describe('CLI: context', () => {
       vi.stubEnv('AUTODROID_CLI_FIREBASE_WEB_API_KEY', undefined);
 
       expect(getCliConfig()).toEqual({
-        endpoint: 'https://mdl-api.unihacker.club/graphql',
+        endpoint: 'https://api-autodroid.laviola.dev/graphql',
         apiKey: 'AIzaSyBt-FkToQznrkXvSHYF2fM3G4XajCsgihs',
       });
     });
@@ -61,7 +61,7 @@ describe('CLI: context', () => {
       vi.stubEnv('AUTODROID_CLI_FIREBASE_WEB_API_KEY', '');
 
       expect(getCliConfig()).toEqual({
-        endpoint: 'https://mdl-api.unihacker.club/graphql',
+        endpoint: 'https://api-autodroid.laviola.dev/graphql',
         apiKey: 'AIzaSyBt-FkToQznrkXvSHYF2fM3G4XajCsgihs',
       });
     });
@@ -77,7 +77,7 @@ describe('CLI: context', () => {
     it('should default to the production web app when it is not set', () => {
       vi.stubEnv('AUTODROID_CLI_WEB_URL', undefined);
 
-      expect(getWebUrl()).toBe('https://mdl.unihacker.club');
+      expect(getWebUrl()).toBe('https://autodroid.laviola.dev');
     });
   });
 
